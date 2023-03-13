@@ -29,4 +29,16 @@ function M.pad(contents, opts)
   return contents
 end
 
+function M.find_file_inside_folder(folderpath, foldername)
+  local folder = io.popen("ls " .. folderpath)
+  local files_str = folder:read("*all")
+
+  for line in files_str:gmatch("%s*(.-)%s*\n") do
+    if foldername == line then
+      return true
+    end
+  end
+  return false
+end
+
 return M

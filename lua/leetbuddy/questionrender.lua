@@ -1,11 +1,11 @@
 M = {}
 
-function M.question()
+function M.question(slug)
   local curl = require("plenary.curl")
   local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
 
   local variables = {
-    titleSlug = "two-sum",
+    titleSlug = slug,
   }
 
   local query = [[
@@ -15,7 +15,6 @@ function M.question()
         title
         titleSlug
         content
-        isPaidOnly
         canSeeQuestion
         difficulty
         exampleTestcases
@@ -23,7 +22,6 @@ function M.question()
           lang
           langSlug
           code
-          __typename
         }
         status
         sampleTestCase
@@ -42,10 +40,11 @@ function M.question()
   local response =
     curl.post(graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query, variables = variables }) })
 
-  file = io.open("./question.md", "r")
-
-  content = file:read("a")
-
+  local question = vim.json.decode(response["body"])["data"]["question"]
+  local content = question["content"]
+  if not question["canSeeQuestion"] then
+    return "You don't have a premium plan"
+  end
   local entities = {
     { "amp", "&" },
     { "apos", "'" },
@@ -73,8 +72,7 @@ function M.question()
   for _, entity in ipairs(entities) do
     content = string.gsub(content, "&" .. entity[1] .. ";", entity[2])
   end
-
-  return content
+  return question["questionId"] .. ". " .. question["title"] .. "\n" .. content
 end
 
 return M

@@ -1,5 +1,10 @@
 local curl = require("plenary.curl")
 local telescope = require("telescope")
+local leetcode_session = require("leetbuddy.config").leetcode_session
+local csrf_token = require("leetbuddy.config").csrf_token
+local directory = require("leetbuddy.config").directory
+local language = require("leetbuddy.config").language
+local utils = require("leetbuddy.utils")
 
 function fetch_problems(query)
   local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
@@ -31,7 +36,7 @@ function fetch_problems(query)
   ]]
 
   local headers = {
-    ["Cookie"] = "LEETCODE_SESSION=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMTQ5OTUzMyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNjJjYWVlZDE5OWZmMGJiZTY4ODZhZDI2ZWJlY2VhNjdjYzIyMDY1OSIsImlkIjoxNDk5NTMzLCJlbWFpbCI6ImRoYW51czMxMzNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJEaGFudXMwMDciLCJ1c2VyX3NsdWciOiJEaGFudXMwMDciLCJhdmF0YXIiOiJodHRwczovL2Fzc2V0cy5sZWV0Y29kZS5jb20vdXNlcnMvYXZhdGFycy9hdmF0YXJfMTY2NzczOTA2MC5wbmciLCJyZWZyZXNoZWRfYXQiOjE2NzQ3OTU4ODAsImlwIjoiNDkuMjA0LjEzOS43NCIsImlkZW50aXR5IjoiMTczZTExOTEzZjI3YzBhNzY2ZmI0MTk5YmFmZTU5MWYiLCJzZXNzaW9uX2lkIjozMzgxMzczMywiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.tvH_YamUgzqPa49Psz-0ihQXFKbirLu5dqNlCnzPK2g;csrftoken=tSL5zBa0SYmDZkvLYb28I0x0ymjWHbrlJEbmd4JIQIrYHAUvKtTOhPUD6mkwikUT",
+    ["Cookie"] = string.format("LEETCODE_SESSION=%s;csrftoken=%s", leetcode_session, csrf_token),
     ["Content-Type"] = "application/json",
     ["Accept"] = "application/json",
   }
@@ -105,16 +110,63 @@ function gen_from_questions(opts)
   end
 end
 
-function select_problem(prompt_bufnr)
-  local problem = action_state.get_selected_entry()
-  print(P(problem))
-  actions.close(prompt_bufnr)
+function checkFolderPresence(folderpath, foldername)
+  -- check for operating system and set command accordingly
+  local is_windows = package.config:sub(1, 1) == "\\"
+  local command = is_windows and "dir" or "ls"
+
+  -- open the parent folder for reading
+  local folder = io.popen(command .. " " .. folderpath)
+
+  -- read the output of the command
+  local files = folder:read("*all")
+
+  -- check if the folder is present
+  if string.match(files, is_windows and "\\" .. foldername .. "\\" or "/" .. foldername .. "/$") then
+    folder:close()
+    return true
+  else
+    folder:close()
+    return false
+  end
 end
 
-function wait(seconds)
-  local start = os.time()
-  repeat
-  until os.time() > start + seconds
+function findFiles(dir)
+  local files = {}
+  for entry in io.popen('dir "' .. dir .. '" /b /a-d'):lines() do
+    table.insert(files, dir .. "\\" .. entry)
+  end
+  for entry in io.popen('dir "' .. dir .. '" /b /ad'):lines() do
+    if entry ~= "." and entry ~= ".." then
+      local subdir = dir .. "\\" .. entry
+      local subfiles = findFiles(subdir)
+      for _, file in ipairs(subfiles) do
+        table.insert(files, file)
+      end
+    end
+  end
+  return files
+end
+
+function select_problem(prompt_bufnr)
+  actions.close(prompt_bufnr)
+  local problem = action_state.get_selected_entry()
+  local question_slug = string.format("%04d-%s", problem["value"]["questionId"], problem["value"]["slug"])
+
+  if not utils.find_file_inside_folder(directory, question_slug) then
+    vim.api.nvim_command(":silent !mkdir " .. directory .. "/" .. question_slug)
+  end
+
+  local file = directory .. "/" .. question_slug .. "/" .. question_slug .. "." .. language
+
+  local qfound = utils.find_file_inside_folder(directory .. "/" .. question_slug, question_slug .. "." .. language)
+
+  if not qfound then
+    vim.api.nvim_command(":silent !touch " .. file)
+  end
+  vim.api.nvim_command("edit! " .. file)
+  vim.api.nvim_command("LCQuestion")
+  -- vim.api.nvim_command("LCReset")
 end
 
 local function filter_problems(bufnr, opts)
@@ -123,8 +175,6 @@ local function filter_problems(bufnr, opts)
     return fetch_problems(prompt)
   end
 end
-
-fetch_problems("")
 
 pickers
   .new(opts, {
@@ -136,6 +186,7 @@ pickers
     sorter = conf.generic_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
       map("i", "<CR>", select_problem)
+      map("n", "<CR>", select_problem)
       return true
     end,
   })

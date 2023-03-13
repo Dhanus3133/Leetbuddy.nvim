@@ -40,8 +40,8 @@ M.setup = function(opts)
     ["Accept"] = "application/json",
   }
 
-  local response =
-    curl.post(graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query, variables = variables }) })
+  -- local response =
+    -- curl.post(graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query, variables = variables }) })
 
   function dump(o)
     if type(o) == "table" then
