@@ -1,5 +1,8 @@
 M = {}
 
+local leetcode_session = require("leetbuddy.config").leetcode_session
+local csrf_token = require("leetbuddy.config").csrf_token
+
 function M.question(slug)
   local curl = require("plenary.curl")
   local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
@@ -13,26 +16,19 @@ function M.question(slug)
       question(titleSlug: $titleSlug) {
         questionId: questionFrontendId
         title
-        titleSlug
         content
         canSeeQuestion
-        difficulty
-        exampleTestcases
         codeSnippets {
           lang
           langSlug
           code
         }
-        status
-        sampleTestCase
-        judgerAvailable
-        judgeType
       }
     }
   ]]
 
   local headers = {
-    ["Cookie"] = "LEETCODE_SESSION=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMTQ5OTUzMyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNjJjYWVlZDE5OWZmMGJiZTY4ODZhZDI2ZWJlY2VhNjdjYzIyMDY1OSIsImlkIjoxNDk5NTMzLCJlbWFpbCI6ImRoYW51czMxMzNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJEaGFudXMwMDciLCJ1c2VyX3NsdWciOiJEaGFudXMwMDciLCJhdmF0YXIiOiJodHRwczovL2Fzc2V0cy5sZWV0Y29kZS5jb20vdXNlcnMvYXZhdGFycy9hdmF0YXJfMTY2NzczOTA2MC5wbmciLCJyZWZyZXNoZWRfYXQiOjE2NzQ3OTU4ODAsImlwIjoiNDkuMjA0LjEzOS43NCIsImlkZW50aXR5IjoiMTczZTExOTEzZjI3YzBhNzY2ZmI0MTk5YmFmZTU5MWYiLCJzZXNzaW9uX2lkIjozMzgxMzczMywiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.tvH_YamUgzqPa49Psz-0ihQXFKbirLu5dqNlCnzPK2g;csrftoken=tSL5zBa0SYmDZkvLYb28I0x0ymjWHbrlJEbmd4JIQIrYHAUvKtTOhPUD6mkwikUT",
+    ["Cookie"] = string.format("LEETCODE_SESSION=%s;csrftoken=%s", leetcode_session, csrf_token),
     ["Content-Type"] = "application/json",
     ["Accept"] = "application/json",
   }

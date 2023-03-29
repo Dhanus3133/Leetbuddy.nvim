@@ -6,7 +6,7 @@ local directory = require("leetbuddy.config").directory
 local language = require("leetbuddy.config").language
 local utils = require("leetbuddy.utils")
 
-function fetch_problems(query)
+function display_questions(query)
   local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
 
   local variables = {
@@ -163,16 +163,18 @@ function select_problem(prompt_bufnr)
 
   if not qfound then
     vim.api.nvim_command(":silent !touch " .. file)
+    vim.api.nvim_command("edit! " .. file)
+    vim.api.nvim_command("LBReset")
+  else
+    vim.api.nvim_command("edit! " .. file)
   end
-  vim.api.nvim_command("edit! " .. file)
   vim.api.nvim_command("LCQuestion")
-  -- vim.api.nvim_command("LCReset")
 end
 
 local function filter_problems(bufnr, opts)
   local cancel = function() end
   return function(prompt)
-    return fetch_problems(prompt)
+    return display_questions(prompt)
   end
 end
 
