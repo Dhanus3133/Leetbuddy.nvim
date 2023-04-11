@@ -62,7 +62,6 @@ local function reset_question()
       ["dart"] = "dart",
     }
 
-    print(language)
     for _, table in ipairs(question["codeSnippets"]) do
       if table.langSlug == langSlugToFileExt[language] then
         vim.api.nvim_buf_set_lines(
