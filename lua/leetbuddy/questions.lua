@@ -1,5 +1,4 @@
 local curl = require("plenary.curl")
-local telescope = require("telescope")
 local leetcode_session = require("leetbuddy.config").leetcode_session
 local csrf_token = require("leetbuddy.config").csrf_token
 local directory = require("leetbuddy.config").directory

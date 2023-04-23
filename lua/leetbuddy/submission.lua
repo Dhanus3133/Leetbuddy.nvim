@@ -1,9 +1,7 @@
-local job = require("plenary.job")
 local curl = require("plenary.curl")
 local domain = require("leetbuddy.config").domain
 local leetcode_session = require("leetbuddy.config").leetcode_session
 local csrf_token = require("leetbuddy.config").csrf_token
-local directory = require("leetbuddy.config").directory
 
 local interpret_solution = domain .. "/problems/two-sum/interpret_solution/"
 
@@ -28,26 +26,25 @@ local response = curl.post(interpret_solution, {
 
 local interpret_id = vim.json.decode(response["body"])["interpret_id"]
 
-local Job = require("plenary.job")
+local timer = vim.loop.new_timer()
 
-if interpret_id then
-  print(interpret_id)
+local json_data
 
-  local status_url = domain .. "/submissions/detail/" .. interpret_id .. "/check"
-  local status_response
-  repeat
-    status_response = curl.get(status_url)
-    local json_data = vim.fn.json_decode(status_response.body)
-  until json_data.state == "SUCCESS"
-  P(status_response)
+local function make_api_call()
+  if interpret_id then
+    print(interpret_id)
+
+    local status_url = domain .. "/submissions/detail/" .. interpret_id .. "/check"
+    local status_response = curl.get(status_url)
+    json_data = vim.fn.json_decode(status_response.body)
+    if json_data.state == "SUCCESS" then
+        P(json_data)
+        timer:stop()
+        print("DONE")
+    end
+  end
 end
 
--- plenary job to run in background and after 10 seconds it must print hello world
--- local Job = require("plenary.job")
--- local j = Job:new({
---   command = "sleep",
---   args = { "10" },
---   on_exit = function(j, code)
---     print("hello world")
---   end,
--- })
+timer:start(100, 1000, vim.schedule_wrap(function()
+    make_api_call()
+end))
