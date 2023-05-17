@@ -1,17 +1,18 @@
-local qr = require("leetbuddy.questionrender")
-local question = require("leetbuddy.question")
-local utils = require("leetbuddy.utils")
 local curl = require("plenary.curl")
 local utils = require("leetbuddy.utils")
 local directory = require("leetbuddy.config").directory
 local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
 local language = require("leetbuddy.config").language
 
-local function reset_question()
-  if is_in_folder(vim.api.nvim_buf_get_name(0), directory) then
+local M = {}
+
+function M.reset_question()
+  if utils.is_in_folder(vim.api.nvim_buf_get_name(0), directory) then
     local file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
 
-    local slug = get_question_slug(file)
+    local input = directory .. "/" .. utils.strip_file_extension(file) .. "/" .. "input.txt"
+
+    local slug = utils.get_question_slug(file)
 
     local variables = {
       titleSlug = slug,
@@ -20,6 +21,7 @@ local function reset_question()
     local query = [[
     query questionData($titleSlug: String!) {
       question(titleSlug: $titleSlug) {
+        sampleTestCase
         codeSnippets {
           langSlug
           code
@@ -41,29 +43,8 @@ local function reset_question()
 
     local question = vim.json.decode(response["body"])["data"]["question"]
 
-    local langSlugToFileExt = {
-      ["cpp"] = "cpp",
-      ["java"] = "java",
-      ["py"] = "python3",
-      ["c"] = "c",
-      ["cs"] = "csharp",
-      ["js"] = "javascript",
-      ["rb"] = "ruby",
-      ["swift"] = "swift",
-      ["go"] = "golang",
-      ["scala"] = "scala",
-      ["kt"] = "kotlin",
-      ["rs"] = "rust",
-      ["php"] = "php",
-      ["ts"] = "typescript",
-      ["rkt"] = "racket",
-      ["erl"] = "erlang",
-      ["ex"] = "elixir",
-      ["dart"] = "dart",
-    }
-
     for _, table in ipairs(question["codeSnippets"]) do
-      if table.langSlug == langSlugToFileExt[language] then
+      if table.langSlug == utils.langSlugToFileExt[language] then
         vim.api.nvim_buf_set_lines(
           vim.api.nvim_get_current_buf(),
           0,
@@ -74,7 +55,17 @@ local function reset_question()
         break
       end
     end
+
+    local input_file = io.open(input, "w")
+
+    if input_file then
+      input_file:write(question["sampleTestCase"])
+      input_file:close()
+      print("Text written successfully.")
+    else
+      print("Failed to open the file.")
+    end
   end
 end
 
-vim.api.nvim_create_user_command("LBReset", reset_question, { bar = true })
+return M

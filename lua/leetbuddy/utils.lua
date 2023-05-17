@@ -1,5 +1,26 @@
 M = {}
 
+M.langSlugToFileExt = {
+  ["cpp"] = "cpp",
+  ["java"] = "java",
+  ["py"] = "python3",
+  ["c"] = "c",
+  ["cs"] = "csharp",
+  ["js"] = "javascript",
+  ["rb"] = "ruby",
+  ["swift"] = "swift",
+  ["go"] = "golang",
+  ["scala"] = "scala",
+  ["kt"] = "kotlin",
+  ["rs"] = "rust",
+  ["php"] = "php",
+  ["ts"] = "typescript",
+  ["rkt"] = "racket",
+  ["erl"] = "erlang",
+  ["ex"] = "elixir",
+  ["dart"] = "dart",
+}
+
 function M.split_string_to_table(str)
   local lines = {}
   for line in str:gmatch("[^\r\n]+") do
@@ -39,6 +60,42 @@ function M.find_file_inside_folder(folderpath, foldername)
     end
   end
   return false
+end
+
+function M.is_in_folder(file, folder)
+  return string.sub(file, 1, string.len(folder)) == folder
+end
+
+function M.get_question_slug(file)
+  return string.gsub(string.gsub(file, "^%d+%-", ""), "%.[^.]+$", "")
+end
+
+function M.read_file_contents(path)
+  local file = io.open(path, "r")
+  if file then
+    local contents = file:read("*a")
+    file:close()
+    return contents
+  end
+  return nil
+end
+
+function M.get_file_extension(filename)
+  local _, _, extension = string.find(filename, "%.([^%.]+)$")
+  return extension
+end
+
+function M.strip_file_extension(file)
+  local lastDotIndex = file:find("%.[^%.]*$")
+  return file:sub(1, lastDotIndex - 1)
+end
+
+function M.get_input_file_path(file_path)
+  local directory_path = file_path:match("(.*/)") or ""
+
+  local input_file_path = directory_path .. "input.txt"
+
+  return input_file_path
 end
 
 return M
