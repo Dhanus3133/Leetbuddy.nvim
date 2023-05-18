@@ -4,7 +4,6 @@ local leetcode_session = require("leetbuddy.config").leetcode_session
 local csrf_token = require("leetbuddy.config").csrf_token
 local utils = require("leetbuddy.utils")
 local timer = vim.loop.new_timer()
-local language = require("leetbuddy.config").language
 
 local M = {}
 
@@ -52,8 +51,11 @@ function check_interpret(interpret_id)
     json_data = vim.fn.json_decode(status_response.body)
     if json_data.state == "SUCCESS" then
       timer:stop()
+      local results_buffer = require("leetbuddy.split").get_results_buffer()
       P(json_data)
+      require("leetbuddy.display").display_results(json_data, results_buffer)
       print("DONE")
+      return
     end
   end
 end
