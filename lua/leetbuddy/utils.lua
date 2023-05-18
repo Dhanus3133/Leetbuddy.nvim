@@ -98,4 +98,14 @@ function M.get_input_file_path(file_path)
   return input_file_path
 end
 
+function M.get_question_number_from_file_name(file_name)
+  local number = string.match(file_name, "^0*(%d+)%-")
+
+  if number then
+    number = tonumber(number)
+    return number
+  end
+  return nil
+end
+
 return M

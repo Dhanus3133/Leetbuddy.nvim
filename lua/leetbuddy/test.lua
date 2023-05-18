@@ -25,7 +25,7 @@ local function generate_interpret_id()
     ["Cookie"] = string.format("LEETCODE_SESSION=%s;csrftoken=%s", leetcode_session, csrf_token),
     ["Content-Type"] = "application/json",
     ["Accept"] = "application/json",
-    ["Referer"] = "https://leetcode.com/problems/two-sum/",
+    ["Referer"] = "https://leetcode.com/problems/" .. utils.get_question_slug(question_slug) .. "/",
   }
 
   local response = curl.post(interpret_solution, {
@@ -34,7 +34,7 @@ local function generate_interpret_id()
       data_input = utils.read_file_contents(input_path),
       judge_type = "small",
       lang = utils.langSlugToFileExt[utils.get_file_extension(vim.fn.expand("%:t"))],
-      question_id = "1",
+      question_id = utils.get_question_number_from_file_name(vim.fn.expand("%:t")),
       typed_code = code,
     }),
   })
