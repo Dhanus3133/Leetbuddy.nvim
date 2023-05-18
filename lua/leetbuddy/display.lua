@@ -1,9 +1,10 @@
 local M = {}
+local utils = require("leetbuddy.utils")
 
 function M.display_results(json_data, buffer, method)
   local results = {}
 
-  function insert(output)
+  local function insert(output)
     table.insert(results, output)
   end
 
@@ -21,6 +22,22 @@ function M.display_results(json_data, buffer, method)
           insert("Test Case: #" .. i .. " ❌ ")
           insert("Expected: " .. json_data["expected_code_answer"][i])
           insert("Output: " .. json_data["code_answer"][i])
+          local std = utils.split_string_to_table(json_data["std_output"][i])
+          local expected_std = utils.split_string_to_table(json_data["expected_std_output"][i])
+
+          if #expected_std > 0 then
+            insert("Expected Std Output: ")
+            for j = 1, #expected_std do
+              insert(expected_std[j])
+            end
+          end
+
+          if #std > 0 then
+            insert("Std Output: ")
+            for j = 1, #std do
+              insert(std[j])
+            end
+          end
           insert("")
         end
       end

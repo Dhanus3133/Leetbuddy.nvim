@@ -49,6 +49,10 @@ function M.split()
       [".*Line.*"] = "ErrorMsg",
       ["Memory: .*"] = "Title",
       ["Runtime: .*"] = "Title",
+      ["Expected"] = "Type",
+      ["Output"] = "Type",
+      ["Std Output"] = "Type",
+      ["Expected Std Output"] = "Type",
     }
     for match, group in pairs(highlights) do
       vim.fn.matchadd(group, match)
