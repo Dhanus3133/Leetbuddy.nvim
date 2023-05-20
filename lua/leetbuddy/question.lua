@@ -1,7 +1,8 @@
 M = {}
 
-local q = require("leetbuddy.questionrender")
 local utils = require("leetbuddy.utils")
+
+local old_contents
 
 function M.question_display(contents, oldqbufnr)
   qbufnr = oldqbufnr or vim.api.nvim_create_buf(true, true)
@@ -46,4 +47,3 @@ function M.question_display(contents, oldqbufnr)
 end
 
 return M
--- question_display(utils.split_string_to_table(q.question()), qbufnr)

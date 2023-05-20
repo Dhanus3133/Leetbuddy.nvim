@@ -1,7 +1,6 @@
 local curl = require("plenary.curl")
 local domain = require("leetbuddy.config").domain
-local leetcode_session = require("leetbuddy.config").leetcode_session
-local csrf_token = require("leetbuddy.config").csrf_token
+local headers = require("leetbuddy.headers")
 local utils = require("leetbuddy.utils")
 local timer = vim.loop.new_timer()
 local request_mode = {
@@ -26,13 +25,11 @@ local function generate_id(mode)
 
   local endpoint_url = domain .. "/problems/" .. question_slug .. "/" .. request_mode[mode]["endpoint"] .. "/"
 
-  local headers = {
-    ["X-CSRFToken"] = csrf_token,
-    ["Cookie"] = string.format("LEETCODE_SESSION=%s;csrftoken=%s", leetcode_session, csrf_token),
-    ["Content-Type"] = "application/json",
-    ["Accept"] = "application/json",
+  local extra_headers = {
     ["Referer"] = domain .. "/problems/" .. utils.get_question_slug(question_slug) .. "/",
   }
+
+  local new_headers = vim.tbl_deep_extend("force", headers, extra_headers)
 
   local body = {
     lang = utils.langSlugToFileExt[utils.get_file_extension(vim.fn.expand("%:t"))],
@@ -54,7 +51,7 @@ local function generate_id(mode)
   end
 
   local response = curl.post(endpoint_url, {
-    headers = headers,
+    headers = new_headers,
     body = vim.json.encode(body),
   })
 
@@ -70,32 +67,32 @@ function check_id(id, mode)
 
   local question_slug = utils.get_question_slug(file)
 
-  local headers = {
-    ["X-CSRFToken"] = csrf_token,
-    ["Cookie"] = string.format("LEETCODE_SESSION=%s;csrftoken=%s", leetcode_session, csrf_token),
-    ["Content-Type"] = "application/json",
-    ["Accept"] = "application/json",
+  local extra_headers = {
     ["Referer"] = domain .. "/problems/" .. utils.get_question_slug(question_slug) .. "/submissions/",
   }
+
+  local new_headers = vim.tbl_deep_extend("force", headers, extra_headers)
 
   if id then
     local status_url = domain .. "/submissions/detail/" .. id .. "/check"
     local status_response = curl.get(status_url, {
-      headers = headers,
+      headers = new_headers,
     })
     json_data = vim.fn.json_decode(status_response.body)
     if json_data["state"] == "SUCCESS" then
       timer:stop()
       local results_buffer = require("leetbuddy.split").get_results_buffer()
-      P(json_data)
-      require("leetbuddy.display").display_results(json_data, results_buffer, mode, code)
-      print("DONE")
+      -- P(json_data) -- DEBUGGING
+      require("leetbuddy.display").display_results(false, results_buffer, json_data, mode)
       return
     end
   end
 end
 
 function M.run(mode)
+  vim.cmd("LBCheckCookies")
+  local results_buffer = require("leetbuddy.split").get_results_buffer()
+  require("leetbuddy.display").display_results(true, results_buffer)
   local id = generate_id(mode)
   timer:start(
     100,

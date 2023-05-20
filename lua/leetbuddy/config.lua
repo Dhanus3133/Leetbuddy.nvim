@@ -1,10 +1,26 @@
-local default_config = {
-  domain = "https://leetcode.com",
-  graphql_endpoint = "https://leetcode.com/graphql",
-  directory = "/home/dhanus/.leetcode",
-  leetcode_session = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMTQ5OTUzMyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNjJjYWVlZDE5OWZmMGJiZTY4ODZhZDI2ZWJlY2VhNjdjYzIyMDY1OSIsImlkIjoxNDk5NTMzLCJlbWFpbCI6ImRoYW51czMxMzNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJEaGFudXMwMDciLCJ1c2VyX3NsdWciOiJEaGFudXMwMDciLCJhdmF0YXIiOiJodHRwczovL2Fzc2V0cy5sZWV0Y29kZS5jb20vdXNlcnMvYXZhdGFycy9hdmF0YXJfMTY2NzczOTA2MC5wbmciLCJyZWZyZXNoZWRfYXQiOjE2ODExMjQ2ODQsImlwIjoiMTgyLjE5LjM1LjE3NyIsImlkZW50aXR5IjoiYWIwOGVkZjJlNWY4OTZjYTMwZjU0MTUzMDA4YjlkMjkiLCJzZXNzaW9uX2lkIjozNjU4NTAzNCwiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.e8sm7VMygexQ2pWupKtANpzSE4jxA6EE1ioxxR1YoAg",
-  csrf_token = "SmdVyu2eWFzwCXhZZS3fOnSck5KZQCyNvFAnS3hHyDY5UtrR4UFGVJzjILofaOwr",
-  language = "go",
+local user_config = require("leetbuddy").user_config
+local path = require("plenary.path")
+local sep = require("plenary.path").path.sep
+local cookie_file = path:new(vim.loop.os_homedir() .. sep .. ".lbcookie")
+
+local domain = "https://leetcode." .. user_config.domain
+local graphql_endpoint = domain .. "/graphql"
+
+cookie_file:touch()
+local success, cookies = pcall(vim.json.decode, cookie_file:read())
+
+if not success then
+  cookies = {}
+end
+
+local extra_config = {
+  domain = domain,
+  graphql_endpoint = graphql_endpoint,
 }
 
-return default_config
+extra_config = vim.tbl_deep_extend("force", extra_config, cookies)
+
+local config = vim.tbl_deep_extend("force", user_config, cookies)
+config = vim.tbl_deep_extend("force", config, extra_config)
+
+return config

@@ -1,11 +1,11 @@
 M = {}
 
-local leetcode_session = require("leetbuddy.config").leetcode_session
-local csrf_token = require("leetbuddy.config").csrf_token
+local curl = require("plenary.curl")
+local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
+local headers = require("leetbuddy.headers")
 
 function M.question(slug)
-  local curl = require("plenary.curl")
-  local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
+  vim.cmd("LBCheckCookies")
 
   local variables = {
     titleSlug = slug,
@@ -26,12 +26,6 @@ function M.question(slug)
       }
     }
   ]]
-
-  local headers = {
-    ["Cookie"] = string.format("LEETCODE_SESSION=%s;csrftoken=%s", leetcode_session, csrf_token),
-    ["Content-Type"] = "application/json",
-    ["Accept"] = "application/json",
-  }
 
   local response =
     curl.post(graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query, variables = variables }) })

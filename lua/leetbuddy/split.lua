@@ -57,6 +57,7 @@ function M.split()
       ["Output"] = "Type",
       ["Std Output"] = "Type",
       ["Expected Std Output"] = "Type",
+      ["Executing..."] = "Todo",
     }
     for match, group in pairs(highlights) do
       vim.fn.matchadd(group, match)
@@ -64,6 +65,13 @@ function M.split()
   end)
 
   vim.api.nvim_exec([[ autocmd VimResized * lua vim.cmd("vertical resize 100") ]], true)
+end
+
+function M.get_input_buffer()
+  if input_buffer == nil then
+    M.split()
+  end
+  return input_buffer
 end
 
 function M.get_results_buffer()
