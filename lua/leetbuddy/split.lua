@@ -1,11 +1,11 @@
 local M = {}
 
 local utils = require("leetbuddy.utils")
-local code_buffer = vim.api.nvim_get_current_buf()
 local input_buffer
 local results_buffer
 
 function M.split()
+  local code_buffer = vim.api.nvim_get_current_buf()
   local code_path = vim.api.nvim_buf_get_name(code_buffer)
 
   if input_buffer ~= nil then
