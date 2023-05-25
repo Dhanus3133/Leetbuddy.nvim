@@ -55,14 +55,14 @@ local function generate_id(mode)
     body = vim.json.encode(body),
   })
 
+  -- utils.P(response)
   local id = vim.json.decode(response["body"])[request_mode[mode]["response_id"]]
   return id
 end
 
-function check_id(id, mode)
+local function check_id(id, mode)
   local json_data
 
-  local code = utils.read_file_contents(vim.fn.expand("%:p"))
   local file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
 
   local question_slug = utils.get_question_slug(file)
@@ -82,8 +82,10 @@ function check_id(id, mode)
     if json_data["state"] == "SUCCESS" then
       timer:stop()
       local results_buffer = require("leetbuddy.split").get_results_buffer()
-      -- P(json_data) -- DEBUGGING
-      require("leetbuddy.display").display_results(false, results_buffer, json_data, mode)
+      -- utils.P(json_data) -- DEBUGGING
+      local code_path = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+      local input_path = utils.get_input_file_path(code_path)
+      require("leetbuddy.display").display_results(false, results_buffer, json_data, mode, input_path)
       return
     end
   end

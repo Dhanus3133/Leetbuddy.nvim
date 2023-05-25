@@ -108,4 +108,9 @@ function M.get_question_number_from_file_name(file_name)
   return nil
 end
 
+M.P = function(v)
+  print(vim.inspect(v))
+  return v
+end
+
 return M

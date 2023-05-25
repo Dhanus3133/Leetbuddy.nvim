@@ -1,7 +1,7 @@
 local M = {}
 local utils = require("leetbuddy.utils")
 
-function M.display_results(is_executing, buffer, json_data, method)
+function M.display_results(is_executing, buffer, json_data, method, input_path)
   local results = {}
 
   local function insert(output)
@@ -35,8 +35,8 @@ function M.display_results(is_executing, buffer, json_data, method)
           for i = 1, json_data["total_testcases"] do
             if json_data["code_answer"][i] ~= json_data["expected_code_answer"][i] then
               insert("Test Case: #" .. i .. " ❌ ")
-              insert("Expected: " .. json_data["expected_code_answer"][i])
               insert("Output: " .. json_data["code_answer"][i])
+              insert("Expected: " .. json_data["expected_code_answer"][i])
               local std = utils.split_string_to_table(json_data["std_output"][i])
               local expected_std = utils.split_string_to_table(json_data["expected_std_output"][i])
 
@@ -65,6 +65,17 @@ function M.display_results(is_executing, buffer, json_data, method)
       else
         insert(json_data["status_msg"])
         insert(json_data["runtime_error"])
+        insert("")
+
+        local std_output = json_data["std_output"]
+        insert("Test Case: #" .. #std_output .. " ❌ ")
+
+        local std = utils.split_string_to_table(std_output[#std_output])
+
+        if #std > 0 then
+          insert("Std Output: ")
+          insert_table(std)
+        end
       end
       insert("")
     else
@@ -88,18 +99,34 @@ function M.display_results(is_executing, buffer, json_data, method)
               .. json_data["total_testcases"] - json_data["total_correct"]
           )
           insert("")
-          insert("Failed Case Input: ")
-          insert_table(utils.split_string_to_table(json_data["input"]))
-          insert("")
-          insert("Expected Output: " .. json_data["expected_output"])
-          insert("Output: " .. json_data["code_output"])
-          local std = utils.split_string_to_table(json_data["std_output"])
-          if #std > 0 then
-            insert("Std Output: ")
-            insert_table(std)
-          end
         else
           insert(json_data["runtime_error"])
+          insert("")
+        end
+        insert("Failed Case Input: ")
+        insert_table(utils.split_string_to_table(json_data["last_testcase"]))
+
+        if input_path ~= nil then
+          local input_file = io.open(input_path, "r")
+          local fileContent = input_file:read("*a")
+          input_file:close()
+
+          if not string.find(fileContent, json_data["last_testcase"]) then
+            -- Append the string to the end of the file
+            input_file = io.open(input_path, "a")
+            input_file:write(json_data["last_testcase"])
+            input_file:close()
+            print(json_data["last_testcase"] .. " added to the test inputs")
+          end
+        end
+
+        insert("")
+        insert("Expected Output: " .. json_data["expected_output"])
+        insert("Output: " .. json_data["code_output"])
+        local std = utils.split_string_to_table(json_data["std_output"])
+        if #std > 0 then
+          insert("Std Output: ")
+          insert_table(std)
         end
       end
     end
