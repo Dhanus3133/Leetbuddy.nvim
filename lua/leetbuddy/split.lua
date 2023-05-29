@@ -63,8 +63,6 @@ function M.split()
       vim.fn.matchadd(group, match)
     end
   end)
-
-  vim.api.nvim_exec([[ autocmd VimResized * lua vim.cmd("vertical resize 100") ]], true)
 end
 
 function M.get_input_buffer()
