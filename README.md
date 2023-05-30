@@ -8,8 +8,9 @@ https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/411e7c02-c888-41ad-
 
 ## Requirements
 
-- Neovim (v0.5 or higher)
-- plenary.nvim
+- Neovim (v0.9.0 or higher)
+- `plenary.nvim`
+- `telescope.nvim`
 
 ## Installation
 
@@ -20,6 +21,7 @@ return {
   "Dhanus3133/LeetBuddy.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
+    "nvim-telescope/telescope.nvim",
   },
   config = function()
     require("leetbuddy").setup({})
