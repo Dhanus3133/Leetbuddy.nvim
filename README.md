@@ -2,6 +2,10 @@
 
 LeetBuddy.nvim is a powerful Neovim plugin that provides a seamless integration with Leetcode.com, allowing you to solve coding challenges directly within Neovim. Increase your productivity using this plugin. 🚀
 
+## Demo
+
+https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/411e7c02-c888-41ad-9e01-99427cb05de5
+
 ## Requirements
 
 - Neovim (v0.5 or higher)
