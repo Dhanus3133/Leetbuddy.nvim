@@ -1,6 +1,6 @@
 # LeetBuddy.nvim
 
-LeetBuddy.nvim is a powerful Neovim plugin that provides a seamless integration with Leetcode.com, allowing you to solve coding challenges directly within Neovim. Increase your productivity using this plugin. 🚀
+LeetBuddy.nvim enables seamless integration with Leetcode.com, empowering you to solve coding problems effortlessly within Neovim.
 
 ## Demo
 
@@ -60,25 +60,34 @@ require('leetbuddy').setup({
 <details>
 <summary>Available language options for the <code>language</code> configuration are:</summary>
 
-- `cpp`: C++
-- `java`: Java
-- `py`: Python 3
-- `c`: C
-- `cs`: C#
-- `js`: JavaScript
-- `rb`: Ruby
-- `swift`: Swift
-- `go`: Go
-- `scala`: Scala
-- `kt`: Kotlin
-- `rs`: Rust
-- `php`: PHP
-- `ts`: TypeScript
-- `rkt`: Racket
-- `erl`: Erlang
-- `ex`: Elixir
-- `dart`: Dart
+| Short Name | Language      |
+|------------|---------------|
+| `cpp`      | C++           |
+| `java`     | Java          |
+| `py`       | Python 3      |
+| `c`        | C             |
+| `cs`       | C#            |
+| `js`       | JavaScript    |
+| `rb`       | Ruby          |
+| `swift`    | Swift         |
+| `go`       | Go            |
+| `scala`    | Scala         |
+| `kt`       | Kotlin        |
+| `rs`       | Rust          |
+| `php`      | PHP           |
+| `ts`       | TypeScript    |
+| `rkt`      | Racket        |
+| `erl`      | Erlang        |
+| `ex`       | Elixir        |
+| `dart`     | Dart          |
+
 </details>
+
+## Login to your account
+
+To use LeetBuddy.nvim, you'll need to obtain the CSRF token and session from your Leetcode.com account. Please make sure to log in to your account before proceeding. Please note that due to the authentication system implemented by Leetcode, manual login credentials entry is not supported.
+
+https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/068f4019-5f2e-4003-a549-46fc061e3e21
 
 ## Contributing
 
