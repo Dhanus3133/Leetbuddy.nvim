@@ -14,7 +14,7 @@ local username
 local function saveVariablesToFile()
   local new_cookies = {}
   for _, varName in ipairs(vars) do
-    local input = vim.fn.input("Enter value for " .. varName .. ": ")
+    local input = vim.fn.input("Enter cookie for " .. varName .. ": ")
     if input then
       new_cookies[varName] = input
     end
@@ -60,7 +60,7 @@ function M.check_auth()
     ["Content-Type"] = "application/json",
     ["Accept"] = "application/json",
     ["x-csrftoken"] = cookies.csrf_token,
-    ["Referer"] = "https://leetcode.com/",
+    ["Referer"] = config.website,
   }
 
   local query = [[
