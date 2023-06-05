@@ -1,10 +1,10 @@
 # LeetBuddy.nvim
 
-LeetBuddy.nvim enables seamless integration with Leetcode.com, empowering you to solve coding problems effortlessly within Neovim.
+LeetBuddy.nvim enables seamless integration with **Leetcode**, empowering you to solve coding problems effortlessly within Neovim.
 
 ## Demo
 
-https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/411e7c02-c888-41ad-9e01-99427cb05de5
+<https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/411e7c02-c888-41ad-9e01-99427cb05de5>
 
 ## Requirements
 
@@ -53,6 +53,7 @@ LeetBuddy.nvim allows you to customize certain aspects of its behavior. You can 
 
 ```lua
 require('leetbuddy').setup({
+    domain = "com"  -- `cn` for chinese leetcode
     language = "py",
 })
 ```
@@ -60,34 +61,34 @@ require('leetbuddy').setup({
 <details>
 <summary>Available language options for the <code>language</code> configuration are:</summary>
 
-| Short Name | Language      |
-|------------|---------------|
-| `cpp`      | C++           |
-| `java`     | Java          |
-| `py`       | Python 3      |
-| `c`        | C             |
-| `cs`       | C#            |
-| `js`       | JavaScript    |
-| `rb`       | Ruby          |
-| `swift`    | Swift         |
-| `go`       | Go            |
-| `scala`    | Scala         |
-| `kt`       | Kotlin        |
-| `rs`       | Rust          |
-| `php`      | PHP           |
-| `ts`       | TypeScript    |
-| `rkt`      | Racket        |
-| `erl`      | Erlang        |
-| `ex`       | Elixir        |
-| `dart`     | Dart          |
+| Short Name | Language   |
+| ---------- | ---------- |
+| `cpp`      | C++        |
+| `java`     | Java       |
+| `py`       | Python 3   |
+| `c`        | C          |
+| `cs`       | C#         |
+| `js`       | JavaScript |
+| `rb`       | Ruby       |
+| `swift`    | Swift      |
+| `go`       | Go         |
+| `scala`    | Scala      |
+| `kt`       | Kotlin     |
+| `rs`       | Rust       |
+| `php`      | PHP        |
+| `ts`       | TypeScript |
+| `rkt`      | Racket     |
+| `erl`      | Erlang     |
+| `ex`       | Elixir     |
+| `dart`     | Dart       |
 
 </details>
 
 ## Login to your account
 
-To use LeetBuddy.nvim, you'll need to obtain the CSRF token and session from your Leetcode.com account. Please make sure to log in to your account before proceeding. Please note that due to the authentication system implemented by Leetcode, manual login credentials entry is not supported.
+To use LeetBuddy.nvim, you'll need to obtain the CSRF token and session from your **Leetcode** account. Please make sure to log in to your account before proceeding. Please note that due to the authentication system implemented by Leetcode, manual login credentials entry is not supported.
 
-https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/068f4019-5f2e-4003-a549-46fc061e3e21
+<https://github.com/Dhanus3133/Leetbuddy.nvim/assets/43700516/068f4019-5f2e-4003-a549-46fc061e3e21>
 
 ## Contributing
 

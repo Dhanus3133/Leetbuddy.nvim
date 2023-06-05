@@ -1,6 +1,9 @@
 local M = {}
 
 local utils = require("leetbuddy.utils")
+local config = require("leetbuddy.config")
+local cn = require("leetbuddy.display").cn
+
 local input_buffer
 local results_buffer
 
@@ -40,25 +43,50 @@ function M.split()
     vim.cmd("set norelativenumber")
     local highlights = {
       -- [""] = "TabLineSel IncSearch",
-      ["Results"] = "TabLineFill",
       [".* Error.*"] = "StatusLine",
-      ["Accepted"] = "DiffAdd",
-      ["Passed Cases"] = "DiffAdd",
-      ["Total Cases"] = "DiffAdd",
-      ["Failed Case Input"] = "ErrorMsg",
-      ["Failed Cases"] = "ErrorMsg",
-      ["Wrong Answer"] = "ErrorMsg",
-      ["Failed"] = "ErrorMsg",
-      ["Test Case: #\\d\\+"] = "Title",
       [".*Line.*"] = "ErrorMsg",
-      ["Memory: .*"] = "Title",
-      ["Runtime: .*"] = "Title",
-      ["Expected"] = "Type",
-      ["Output"] = "Type",
-      ["Std Output"] = "Type",
-      ["Expected Std Output"] = "Type",
-      ["Executing..."] = "Todo",
     }
+    local extra_highlights
+
+    if config.domain == "cn" then
+      extra_highlights = {
+        [cn["res"]] = "TabLineFill",
+        [cn["acc"]] = "DiffAdd",
+        [cn["pc"]] = "DiffAdd",
+        [cn["totc"]] = "DiffAdd",
+        [cn["f_case_in"]] = "ErrorMsg",
+        [cn["wrong_ans_err"]] = "ErrorMsg",
+        [cn["failed"]] = "ErrorMsg",
+        [cn["testc"] .. ": #\\d\\+"] = "Title",
+        [cn["mem"] .. ": .*"] = "Title",
+        [cn["rt"] .. ": .*"] = "Title",
+        [cn["exp"]] = "Type",
+        [cn["out"]] = "Type",
+        [cn["exp_out"]] = "Type",
+        [cn["stdo"]] = "Type",
+        [cn["exe"] .. "..."] = "Todo",
+      }
+    else
+      extra_highlights = {
+        ["Results"] = "TabLineFill",
+        ["Accepted"] = "DiffAdd",
+        ["Passed Cases"] = "DiffAdd",
+        ["Total Cases"] = "DiffAdd",
+        ["Failed Case Input"] = "ErrorMsg",
+        ["Wrong Answer"] = "ErrorMsg",
+        ["Failed"] = "ErrorMsg",
+        ["Test Case: #\\d\\+"] = "Title",
+        ["Memory: .*"] = "Title",
+        ["Runtime: .*"] = "Title",
+        ["Expected"] = "Type",
+        ["Output"] = "Type",
+        ["Std Output"] = "Type",
+        ["Executing..."] = "Todo",
+      }
+    end
+
+    highlights = vim.tbl_deep_extend("force", highlights, extra_highlights)
+
     for match, group in pairs(highlights) do
       vim.fn.matchadd(group, match)
     end

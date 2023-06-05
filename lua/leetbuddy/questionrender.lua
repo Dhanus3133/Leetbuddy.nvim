@@ -1,7 +1,7 @@
 M = {}
 
 local curl = require("plenary.curl")
-local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
+local config = require("leetbuddy.config")
 local headers = require("leetbuddy.headers")
 
 function M.question(slug)
@@ -12,27 +12,33 @@ function M.question(slug)
   }
 
   local query = [[
-    query questionData($titleSlug: String!) {
-      question(titleSlug: $titleSlug) {
-        questionId: questionFrontendId
-        title
-        content
-        canSeeQuestion
-        codeSnippets {
-          lang
-          langSlug
-          code
-        }
+  query questionData($titleSlug: String!) {
+    question(titleSlug: $titleSlug) {
+      questionId: questionFrontendId
+      ]] .. (config.domain == "cn" and [[
+         title: translatedTitle
+         content: translatedContent
+      ]] or [[
+         title
+         content
+      ]]) .. [[
+      codeSnippets {
+        lang
+        langSlug
+        code
       }
     }
-  ]]
+  }
+]]
 
-  local response =
-    curl.post(graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query, variables = variables }) })
+  local response = curl.post(
+    config.graphql_endpoint,
+    { headers = headers, body = vim.json.encode({ query = query, variables = variables }) }
+  )
 
   local question = vim.json.decode(response["body"])["data"]["question"]
   local content = question["content"]
-  if not question["canSeeQuestion"] then
+  if question["content"] == vim.NIL then
     return "You don't have a premium plan"
   end
   local entities = {
