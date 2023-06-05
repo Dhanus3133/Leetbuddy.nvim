@@ -2,8 +2,13 @@ local M = {}
 
 M.user_config = require("leetbuddy.default_config")
 
-local function create_cmds()
-  local questions = require("leetbuddy.questions").questions
+local function create_cmds(config)
+  local questions
+  if config["domain"] == "cn" then
+    questions = require("leetbuddy.questions_cn").questions
+  else
+    questions = require("leetbuddy.questions").questions
+  end
   local question = require("leetbuddy.questionfromfile").question
   local reset = require("leetbuddy.reset").reset_question
   local split = require("leetbuddy.split").split
@@ -25,7 +30,7 @@ end
 
 M.setup = function(opts)
   M.user_config = vim.tbl_deep_extend("force", M.user_config, opts)
-  create_cmds()
+  create_cmds(opts)
 end
 
 return M
