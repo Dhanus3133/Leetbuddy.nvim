@@ -3,11 +3,13 @@ local M = {}
 M.user_config = require("leetbuddy.default_config")
 
 local function create_cmds(config)
-  local questions
+  local questions, todayQuestion
   if config["domain"] == "cn" then
     questions = require("leetbuddy.questions_cn").questions
+    todayQuestion = require("leetbuddy.questions_cn").questionOfToday
   else
     questions = require("leetbuddy.questions").questions
+    -- todayQuestion = require("leetbuddy.questions").questions
   end
   local question = require("leetbuddy.questionfromfile").question
   local reset = require("leetbuddy.reset").reset_question
@@ -20,6 +22,7 @@ local function create_cmds(config)
 
   vim.api.nvim_create_user_command("LBQuestions", questions, opts)
   vim.api.nvim_create_user_command("LBQuestion", question, opts)
+  vim.api.nvim_create_user_command("LBQuestionOfToday", todayQuestion, opts)
   vim.api.nvim_create_user_command("LBReset", reset, opts)
   vim.api.nvim_create_user_command("LBSplit", split, opts)
   vim.api.nvim_create_user_command("LBTest", test, opts)
