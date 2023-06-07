@@ -101,10 +101,33 @@ function M.get_input_buffer()
 end
 
 function M.get_results_buffer()
-  if results_buffer == nil then
-    M.split()
-  end
   return results_buffer
+end
+
+local function close_buffer_window(win)
+  local num = vim.api.nvim_win_get_number(win) - 1
+  vim.cmd(num .. "close")
+end
+
+function M.close_split()
+  if input_buffer then
+    vim.api.nvim_buf_call(input_buffer, function()
+      close_buffer_window(vim.api.nvim_get_current_win())
+    end)
+  end
+  if results_buffer then
+    vim.api.nvim_buf_call(results_buffer, function()
+      close_buffer_window(vim.api.nvim_get_current_win())
+    end)
+  end
+
+  if utils.is_in_folder(vim.api.nvim_buf_get_name(0), config.directory) then
+    local code_path = vim.api.nvim_buf_get_name(0)
+    vim.cmd("silent! bd " .. code_path)
+    vim.cmd("silent! bd " .. utils.get_input_file_path(code_path))
+  end
+  input_buffer = nil
+  results_buffer = nil
 end
 
 return M

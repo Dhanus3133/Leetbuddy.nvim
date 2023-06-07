@@ -3,6 +3,7 @@ local sep = require("plenary.path").path.sep
 local config = require("leetbuddy.config")
 local headers = require("leetbuddy.headers")
 local utils = require("leetbuddy.utils")
+local split = require("leetbuddy.split")
 
 local M = {}
 
@@ -15,21 +16,33 @@ local function display_questions(search_query)
 
   local query = [[
     query problemsetQuestionList($searchKeyword: String!) {
+  ]] .. (config.domain == "cn" and [[
+      problemsetQuestionList(
+  ]] or [[
       problemsetQuestionList: questionList(
+  ]]) .. [[
         categorySlug: ""
         filters: {searchKeywords: $searchKeyword}
         limit: 20
-        skip:0
+        skip: 0
     ) {
-        total: totalNum
-        questions: data {
-          difficulty
-          questionId: questionFrontendId
-          isFavor
-          paidOnly : isPaidOnly
-          status
-          title
-          titleSlug
+  ]] .. (config.domain == "cn" and [[
+          total
+          questions {
+            paidOnly
+            titleCn
+            frontendQuestionId
+  ]] or [[
+          total: totalNum
+          questions: data {
+            paidOnly : isPaidOnly
+            titleCn: title
+            frontendQuestionId: questionFrontendId
+  ]]) .. [[
+            difficulty
+            isFavor
+            status
+            titleSlug
         }
       }
     }
@@ -60,6 +73,8 @@ local function update_status(sts, is_paid)
   local statuses = {
     ac = "✔️",
     notac = "❌",
+    AC = "✔️",
+    TRIED = "❌",
   }
   local s = sts ~= vim.NIL and statuses[sts] or ""
   local c = is_paid and "👑" or ""
@@ -79,9 +94,9 @@ local function gen_from_questions()
 
   local make_display = function(entry)
     return displayer({
-      { entry.value.questionId, "Number" },
+      { entry.value.frontendQuestionId, "Number" },
       { update_status(entry.value.status, entry.value.paid_only), "Status" },
-      { entry.value.title, "Title" },
+      { entry.value.titleCn, "Title" },
       { entry.value.difficulty, "Difficulty" },
     })
   end
@@ -90,14 +105,14 @@ local function gen_from_questions()
     local entry = {
       display = make_display,
       value = {
-        questionId = o.questionId,
+        frontendQuestionId = o.frontendQuestionId,
         status = o.status,
-        title = o.title,
+        titleCn = o.titleCn,
         slug = o.titleSlug,
         difficulty = o.difficulty,
         paid_only = o.paidOnly,
       },
-      ordinal = string.format("%s %s %s %s", o.questionId, o.status, o.title, o.difficulty),
+      ordinal = string.format("%s %s %s %s", o.frontendQuestionId, o.status, o.titleCn, o.difficulty),
     }
     return make_entry.set_default_entry_mt(entry, opts)
   end
@@ -106,7 +121,7 @@ end
 local function select_problem(prompt_bufnr)
   actions.close(prompt_bufnr)
   local problem = action_state.get_selected_entry()
-  local question_slug = string.format("%04d-%s", problem["value"]["questionId"], problem["value"]["slug"])
+  local question_slug = string.format("%04d-%s", problem["value"]["frontendQuestionId"], problem["value"]["slug"])
 
   if not utils.find_file_inside_folder(config.directory, question_slug) then
     vim.api.nvim_command(":silent !mkdir " .. config.directory .. sep .. question_slug)
@@ -117,6 +132,10 @@ local function select_problem(prompt_bufnr)
 
   local qfound =
     utils.find_file_inside_folder(config.directory .. sep .. question_slug, question_slug .. "." .. config.language)
+
+  if split.get_results_buffer() then
+    vim.api.nvim_command("LBClose")
+  end
 
   if not qfound then
     vim.api.nvim_command(":silent !touch " .. file)

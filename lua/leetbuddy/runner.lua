@@ -2,6 +2,7 @@ local curl = require("plenary.curl")
 local website = require("leetbuddy.config").website
 local headers = require("leetbuddy.headers")
 local utils = require("leetbuddy.utils")
+local question = require("leetbuddy.question")
 local timer = vim.loop.new_timer()
 local request_mode = {
   test = {
@@ -33,7 +34,7 @@ local function generate_id(mode)
 
   local body = {
     lang = utils.langSlugToFileExt[utils.get_file_extension(vim.fn.expand("%:t"))],
-    question_id = utils.get_question_number_from_file_name(vim.fn.expand("%:t")),
+    question_id = question.get_question_id(),
     typed_code = code,
   }
 
