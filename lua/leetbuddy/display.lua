@@ -5,10 +5,10 @@ local is_cn = require("leetbuddy.config").domain == "cn"
 local cn = {
   exe = "执行中",
   res = "结果",
-  pc = "通过案例数",
-  acc = "公认",
+  pc = "通过测试用例数",
+  acc = "通过",
   testc = "测试用例",
-  totc = "案件总数",
+  totc = "测试用例总数",
   out = "输出",
   exp = "预期的",
   stdo = "标准输出",
@@ -16,10 +16,10 @@ local cn = {
   rt = "执行用时",
   r_err = "执行出错",
   tl_err = "超出时间限制",
-  wrong_ans_err = "錯誤的答案",
+  wrong_ans_err = "解答错误",
   failed = "失败的",
-  f_case_in = "失败案例输入",
-  exp_out = "预期产出",
+  f_case_in = "失败测试用例输入",
+  exp_out = "预期输出",
 }
 
 M.cn = cn
