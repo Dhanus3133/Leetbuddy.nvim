@@ -133,7 +133,6 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
         insert((is_cn and cn["mem"] or "Memory") .. ": " .. json_data["status_memory"])
         insert((is_cn and cn["rt"] or "Runtime") .. ": " .. json_data["status_runtime"])
       else
-        P(json_data)
         insert(get_status_msg(json_data["status_msg"]))
 
         if json_data["run_success"] then
