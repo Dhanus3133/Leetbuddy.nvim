@@ -27,11 +27,11 @@ function M.split()
   vim.api.nvim_buf_set_option(results_buffer, "filetype", "Results")
 
   vim.api.nvim_buf_call(code_buffer, function()
-    vim.cmd("vsplit " .. utils.get_input_file_path(code_path))
+    vim.cmd("botright vsplit " .. utils.get_input_file_path(code_path))
   end)
 
   vim.api.nvim_buf_call(input_buffer, function()
-    vim.cmd("split +buffer" .. results_buffer)
+    vim.cmd("rightbelow split +buffer" .. results_buffer)
   end)
 
   vim.api.nvim_buf_call(code_buffer, function()
