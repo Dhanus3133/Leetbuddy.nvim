@@ -3,7 +3,6 @@ local sep = require("plenary.path").path.sep
 local utils = require("leetbuddy.utils")
 local directory = require("leetbuddy.config").directory
 local graphql_endpoint = require("leetbuddy.config").graphql_endpoint
-local language = require("leetbuddy.config").language
 local headers = require("leetbuddy.headers")
 
 local M = {}
@@ -39,6 +38,7 @@ function M.reset_question()
     )
 
     local question = vim.json.decode(response["body"])["data"]["question"]
+    local language = utils.get_file_extension(vim.fn.expand("%:t"))
 
     for _, table in ipairs(question["codeSnippets"]) do
       if table.langSlug == utils.langSlugToFileExt[language] then

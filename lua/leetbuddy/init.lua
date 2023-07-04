@@ -22,6 +22,7 @@ local function create_cmds()
   vim.api.nvim_create_user_command("LBSubmit", submit, opts)
   vim.api.nvim_create_user_command("LBClose", close, opts)
   vim.api.nvim_create_user_command("LBCheckCookies", checkcookies, opts)
+  require("leetbuddy.functionalities")
 end
 
 M.setup = function(opts)

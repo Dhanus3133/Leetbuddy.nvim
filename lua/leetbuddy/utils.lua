@@ -108,6 +108,16 @@ function M.get_question_number_from_file_name(file_name)
   return nil
 end
 
+function M.is_in_table(tab, val)
+  for _, value in ipairs(tab) do
+    if value == val then
+      return true
+    end
+  end
+
+  return false
+end
+
 M.P = function(v)
   print(vim.inspect(v))
   return v
