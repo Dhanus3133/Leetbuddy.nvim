@@ -7,22 +7,27 @@ local split = require("leetbuddy.split")
 
 local M = {}
 
+M.difficulty = nil
+M.status = nil
+
 local function display_questions(search_query)
   local graphql_endpoint = config.graphql_endpoint
 
   local variables = {
     searchKeyword = search_query,
+    difficulty = M.difficulty,
+    status = M.status,
   }
 
   local query = [[
-    query problemsetQuestionList($searchKeyword: String!) {
+    query problemsetQuestionList($searchKeyword: String!, $difficulty: DifficultyEnum, $status: UserQuestionStatus) {
   ]] .. (config.domain == "cn" and [[
       problemsetQuestionList(
   ]] or [[
       problemsetQuestionList: questionList(
   ]]) .. [[
         categorySlug: ""
-        filters: {searchKeywords: $searchKeyword}
+        filters: {searchKeywords: $searchKeyword, difficulty: $difficulty, status: $status}
         limit: 20
         skip: 0
     ) {
@@ -167,8 +172,36 @@ function M.questions()
       }),
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(_, map)
-        map("i", "<CR>", select_problem)
-        map("n", "<CR>", select_problem)
+        map({ "n", "i" }, "<CR>", select_problem)
+        map({ "n", "i" }, "<A-r>", function()
+          M.difficulty = nil
+          M.status = nil
+          M.questions()
+        end)
+        map({ "n", "i" }, "<A-e>", function()
+          M.difficulty = "EASY"
+          M.questions()
+        end)
+        map({ "n", "i" }, "<A-m>", function()
+          M.difficulty = "MEDIUM"
+          M.questions()
+        end)
+        map({ "n", "i" }, "<A-h>", function()
+          M.difficulty = "HARD"
+          M.questions()
+        end)
+        map({ "n", "i" }, "<A-a>", function()
+          M.status = "AC"
+          M.questions()
+        end)
+        map({ "n", "i" }, "<A-y>", function()
+          M.status = "NOT_STARTED"
+          M.questions()
+        end)
+        map({ "n", "i" }, "<A-t>", function()
+          M.status = "TRIED"
+          M.questions()
+        end)
         return true
       end,
     })
