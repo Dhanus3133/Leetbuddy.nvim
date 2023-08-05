@@ -1,5 +1,5 @@
 local curl = require("plenary.curl")
-local website = require("leetbuddy.config").website
+local config = require("leetbuddy.config")
 local headers = require("leetbuddy.headers")
 local utils = require("leetbuddy.utils")
 local question = require("leetbuddy.question")
@@ -24,10 +24,10 @@ local function generate_id(mode)
 
   local question_slug = utils.get_question_slug(file)
 
-  local endpoint_url = website .. "/problems/" .. question_slug .. "/" .. request_mode[mode]["endpoint"] .. "/"
+  local endpoint_url = config.website .. "/problems/" .. question_slug .. "/" .. request_mode[mode]["endpoint"] .. "/"
 
   local extra_headers = {
-    ["Referer"] = website .. "/problems/" .. utils.get_question_slug(question_slug) .. "/",
+    ["Referer"] = config.website .. "/problems/" .. utils.get_question_slug(question_slug) .. "/",
   }
 
   local new_headers = vim.tbl_deep_extend("force", headers, extra_headers)
@@ -69,17 +69,20 @@ local function check_id(id, mode)
   local question_slug = utils.get_question_slug(file)
 
   local extra_headers = {
-    ["Referer"] = website .. "/problems/" .. utils.get_question_slug(question_slug) .. "/submissions/",
+    ["Referer"] = config.website .. "/problems/" .. utils.get_question_slug(question_slug) .. "/submissions/",
   }
 
   local new_headers = vim.tbl_deep_extend("force", headers, extra_headers)
 
   if id then
-    local status_url = website .. "/submissions/detail/" .. id .. "/check"
+    local status_url = config.website .. "/submissions/detail/" .. id .. "/check"
     local status_response = curl.get(status_url, {
       headers = new_headers,
     })
     json_data = vim.fn.json_decode(status_response.body)
+    if config.debug then
+      utils.P(json_data)
+    end
     if json_data["state"] == "SUCCESS" then
       timer:stop()
       local results_buffer = require("leetbuddy.split").get_results_buffer()
