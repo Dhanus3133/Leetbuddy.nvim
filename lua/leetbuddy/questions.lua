@@ -14,22 +14,24 @@ local function display_questions(search_query)
   local graphql_endpoint = config.graphql_endpoint
 
   local variables = {
-    searchKeyword = search_query,
-    difficulty = M.difficulty,
-    status = M.status,
+    limit = 20,
+    filters = {
+      difficulty = M.difficulty,
+      searchKeywords = search_query,
+      status = M.status,
+    },
   }
 
   local query = [[
-    query problemsetQuestionList($searchKeyword: String!, $difficulty: DifficultyEnum, $status: UserQuestionStatus) {
+    query problemsetQuestionList($limit: Int, $filters: QuestionListFilterInput) {
   ]] .. (config.domain == "cn" and [[
       problemsetQuestionList(
   ]] or [[
       problemsetQuestionList: questionList(
   ]]) .. [[
         categorySlug: ""
-        filters: {searchKeywords: $searchKeyword, difficulty: $difficulty, status: $status}
-        limit: 20
-        skip: 0
+        limit: $limit
+        filters: $filters
     ) {
   ]] .. (config.domain == "cn" and [[
           total
@@ -40,7 +42,7 @@ local function display_questions(search_query)
   ]] or [[
           total: totalNum
           questions: data {
-            paidOnly : isPaidOnly
+            paidOnly: isPaidOnly
             titleCn: title
             frontendQuestionId: questionFrontendId
   ]]) .. [[
