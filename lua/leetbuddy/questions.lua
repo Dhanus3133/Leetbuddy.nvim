@@ -9,11 +9,13 @@ local M = {}
 
 M.difficulty = nil
 M.status = nil
+M.skip = 0
 
 local function display_questions(search_query)
   local graphql_endpoint = config.graphql_endpoint
 
   local variables = {
+    skip = M.skip,
     limit = 20,
     filters = {
       difficulty = M.difficulty,
@@ -23,13 +25,14 @@ local function display_questions(search_query)
   }
 
   local query = [[
-    query problemsetQuestionList($limit: Int, $filters: QuestionListFilterInput) {
+    query problemsetQuestionList($limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
   ]] .. (config.domain == "cn" and [[
       problemsetQuestionList(
   ]] or [[
       problemsetQuestionList: questionList(
   ]]) .. [[
         categorySlug: ""
+        skip: $skip
         limit: $limit
         filters: $filters
     ) {
@@ -202,6 +205,14 @@ function M.questions()
         end)
         map({ "n", "i" }, "<A-t>", function()
           M.status = "TRIED"
+          M.questions()
+        end)
+        map({ "n", "i" }, config.page_prev, function()
+          M.skip = M.skip >= 20 and M.skip - 20 or M.skip
+          M.questions()
+        end)
+        map({ "n", "i" }, config.page_next, function()
+          M.skip = M.skip + 20
           M.questions()
         end)
         return true

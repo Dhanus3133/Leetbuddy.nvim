@@ -5,6 +5,8 @@ local default_config = {
   directory = vim.loop.os_homedir() .. sep .. ".leetcode",
   language = "py",
   debug = false,
+  page_next = "<Right>",  -- list question with next page (20)
+  page_prev = "<Left>",  -- list question with prev page (20)
 }
 
 return default_config
