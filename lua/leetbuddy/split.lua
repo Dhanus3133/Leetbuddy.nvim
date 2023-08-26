@@ -79,6 +79,7 @@ function M.split()
         ["Memory: .*"] = "Title",
         ["Runtime: .*"] = "Title",
         ["Expected"] = "Type",
+        ["Input"] = "Type",
         ["Output"] = "Type",
         ["Std Output"] = "Type",
         ["Executing..."] = "Todo",

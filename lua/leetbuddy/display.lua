@@ -9,6 +9,7 @@ local cn = {
   acc = "通过",
   testc = "测试用例",
   totc = "测试用例总数",
+  inc = "输入",
   out = "输出",
   exp = "预期的",
   stdo = "标准输出",
@@ -75,9 +76,14 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
               .. json_data["total_testcases"] - json_data["total_correct"]
           )
           insert("")
+
+          local test_case_inputs = utils.split_test_case_inputs(input_path, json_data["total_testcases"])
           for i = 1, json_data["total_testcases"] do
             if json_data["code_answer"][i] ~= json_data["expected_code_answer"][i] then
               insert((is_cn and cn["testc"] or "Test Case") .. ": #" .. i .. " ❌ ")
+
+              local failing_test_input = table.concat(test_case_inputs[i], ", ")
+              insert((is_cn and cn["inc"] or "Input") .. ": " .. failing_test_input)
               insert((is_cn and cn["out"] or "Output") .. ": " .. json_data["code_answer"][i])
               insert((is_cn and cn["exp"] or "Expected") .. ": " .. json_data["expected_code_answer"][i])
               local std = utils.split_string_to_table(json_data["std_output_list"][i])
