@@ -56,7 +56,10 @@ local function generate_id(mode)
     body = vim.json.encode(body),
   })
 
-  -- utils.P(response)
+  if config.debug then
+    print("Response from " .. endpoint_url)
+    utils.P(response["body"])
+  end
   local id = vim.json.decode(response["body"])[request_mode[mode]["response_id"]]
   return id
 end
@@ -81,6 +84,7 @@ local function check_id(id, mode)
     })
     json_data = vim.fn.json_decode(status_response.body)
     if config.debug then
+      print("Response from " .. status_url)
       utils.P(json_data)
     end
     if json_data["state"] == "SUCCESS" then
