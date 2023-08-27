@@ -108,6 +108,29 @@ function M.get_question_number_from_file_name(file_name)
   return nil
 end
 
+function M.split_test_case_inputs(test_path, num_tests)
+  local test_input = M.read_file_contents(test_path)
+  local all_parameters = {}
+  for param in string.gmatch(test_input, "([^\n]+)") do
+    table.insert(all_parameters, param)
+  end
+
+  local params_per_test = math.floor(#all_parameters / num_tests)
+
+  local test_case_inputs = {}
+  for i = 1, num_tests do
+    local test_input_i = {}
+    local start_param_idx = (i - 1) * params_per_test + 1
+    local end_param_idx = start_param_idx + params_per_test - 1
+    for j = start_param_idx, end_param_idx do
+      table.insert(test_input_i, all_parameters[j])
+    end
+    table.insert(test_case_inputs, test_input_i)
+  end
+
+  return test_case_inputs
+end
+
 function M.is_in_table(tab, val)
   for _, value in ipairs(tab) do
     if value == val then
