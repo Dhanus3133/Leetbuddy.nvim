@@ -58,7 +58,6 @@ function M.reset_question()
 
     if input_file then
       for _, testcase in ipairs(question["exampleTestcaseList"]) do
-         print(testcase)
          input_file:write(testcase .. "\n")
       end
       -- input_file:write(question["sampleTestCase"])
