@@ -70,7 +70,8 @@ require('leetbuddy').setup({
         -- These replace Alt with Ctrl
         reset = "<C-r>",
         easy = "<C-e>",
-        medium = "<C-m>",
+        -- Can't use <C-m> since that is interpreted as <CR>
+        medium = "<C-d>",
         hard = "<C-h>",
         accepted = "<C-a>",
         not_started = "<C-y>",
