@@ -5,9 +5,9 @@ vim.api.nvim_create_user_command("LBChangeLanguage", function(args)
 end, {
   nargs = 1,
   complete = function(ArgLead)
-    local langauges = change_language.get_languages()
+    local languages = change_language.get_languages()
     local filtered_languages = {}
-    for _, completion in ipairs(langauges) do
+    for _, completion in ipairs(languages) do
       if string.find(completion, ArgLead) == 1 then
         table.insert(filtered_languages, completion)
       end
