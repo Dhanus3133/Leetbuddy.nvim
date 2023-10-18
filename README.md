@@ -1,7 +1,5 @@
 # LeetBuddy.nvim
 
-**Forked from Dhanus3133/Leetbuddy.nvim to add the ability to change keybindings in the LBQuestions picker**
-
 LeetBuddy.nvim enables seamless integration with **Leetcode**, empowering you to solve coding problems effortlessly within Neovim.
 
 ## Demo
