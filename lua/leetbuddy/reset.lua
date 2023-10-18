@@ -23,6 +23,7 @@ function M.reset_question()
     local query = [[
       query questionData($titleSlug: String!) {
         question(titleSlug: $titleSlug) {
+          exampleTestcaseList
           sampleTestCase
           codeSnippets {
             langSlug
@@ -56,7 +57,11 @@ function M.reset_question()
     local input_file = io.open(input, "w")
 
     if input_file then
-      input_file:write(question["sampleTestCase"])
+      for _, testcase in ipairs(question["exampleTestcaseList"]) do
+         print(testcase)
+         input_file:write(testcase .. "\n")
+      end
+      -- input_file:write(question["sampleTestCase"])
       input_file:close()
     else
       print("Failed to open the file.")
