@@ -66,6 +66,18 @@ LeetBuddy.nvim allows you to customize certain aspects of its behavior. You can 
 require('leetbuddy').setup({
     domain = "com"  -- `cn` for chinese leetcode
     language = "py",
+    keys = {
+        -- Overwrites the key to select the question
+        select = "<Space>",
+        -- These replace Alt with Ctrl
+        reset = "<C-r>",
+        easy = "<C-e>",
+        medium = "<C-m>",
+        hard = "<C-h>",
+        accepted = "<C-a>",
+        not_started = "<C-y>",
+        tried = "<C-t>",
+    }
 })
 ```
 
