@@ -7,13 +7,13 @@ local default_config = {
   debug = false,
   keys = {
     select = "<CR>",
-    reset = "<A-r>",
-    easy = "<A-e>",
-    medium = "<A-m>",
-    hard = "<A-h>",
-    accepted = "<A-a>",
-    not_started = "<A-y>",
-    tried = "<A-t>",
+    reset = "<C-r>",
+    easy = "<C-e>",
+    medium = "<C-m>",
+    hard = "<C-h>",
+    accepted = "<C-a>",
+    not_started = "<C-y>",
+    tried = "<C-t>",
   },
 }
 

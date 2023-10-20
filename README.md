@@ -65,12 +65,9 @@ require('leetbuddy').setup({
     domain = "com"  -- `cn` for chinese leetcode
     language = "py",
     keys = {
-        -- Overwrites the key to select the question
-        select = "<Space>",
-        -- These replace Alt with Ctrl
+        select = "<CR>",
         reset = "<C-r>",
         easy = "<C-e>",
-        -- Can't use <C-m> since that is interpreted as <CR>
         medium = "<C-d>",
         hard = "<C-h>",
         accepted = "<C-a>",
