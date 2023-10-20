@@ -174,33 +174,33 @@ function M.questions()
       }),
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(_, map)
-        map({ "n", "i" }, "<CR>", select_problem)
-        map({ "n", "i" }, "<A-r>", function()
+        map({ "n", "i" }, config.keys.select, select_problem)
+        map({ "n", "i" }, config.keys.reset, function()
           M.difficulty = nil
           M.status = nil
           M.questions()
         end)
-        map({ "n", "i" }, "<A-e>", function()
+        map({ "n", "i" }, config.keys.easy, function()
           M.difficulty = "EASY"
           M.questions()
         end)
-        map({ "n", "i" }, "<A-m>", function()
+        map({ "n", "i" }, config.keys.medium, function()
           M.difficulty = "MEDIUM"
           M.questions()
         end)
-        map({ "n", "i" }, "<A-h>", function()
+        map({ "n", "i" }, config.keys.hard, function()
           M.difficulty = "HARD"
           M.questions()
         end)
-        map({ "n", "i" }, "<A-a>", function()
+        map({ "n", "i" }, config.keys.accepted, function()
           M.status = "AC"
           M.questions()
         end)
-        map({ "n", "i" }, "<A-y>", function()
+        map({ "n", "i" }, config.keys.not_started, function()
           M.status = "NOT_STARTED"
           M.questions()
         end)
-        map({ "n", "i" }, "<A-t>", function()
+        map({ "n", "i" }, config.keys.tried, function()
           M.status = "TRIED"
           M.questions()
         end)
