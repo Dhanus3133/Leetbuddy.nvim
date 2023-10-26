@@ -9,12 +9,14 @@ local M = {}
 
 M.difficulty = nil
 M.status = nil
+M.skip = 0
 
 local function display_questions(search_query)
   local graphql_endpoint = config.graphql_endpoint
 
   local variables = {
-    limit = 20,
+    skip = M.skip,
+    limit = config.limit,
     filters = {
       difficulty = M.difficulty,
       searchKeywords = search_query,
@@ -23,13 +25,14 @@ local function display_questions(search_query)
   }
 
   local query = [[
-    query problemsetQuestionList($limit: Int, $filters: QuestionListFilterInput) {
+    query problemsetQuestionList($limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
   ]] .. (config.domain == "cn" and [[
       problemsetQuestionList(
   ]] or [[
       problemsetQuestionList: questionList(
   ]]) .. [[
         categorySlug: ""
+        skip: $skip
         limit: $limit
         filters: $filters
     ) {
@@ -157,6 +160,7 @@ local function select_problem(prompt_bufnr)
 end
 
 local function filter_problems()
+  M.skip = 0
   -- local cancel = function() end
   return function(prompt)
     return display_questions(prompt)
@@ -178,30 +182,47 @@ function M.questions()
         map({ "n", "i" }, config.keys.reset, function()
           M.difficulty = nil
           M.status = nil
+          M.skip = 0
           M.questions()
         end)
         map({ "n", "i" }, config.keys.easy, function()
           M.difficulty = "EASY"
+          M.skip = 0
           M.questions()
         end)
         map({ "n", "i" }, config.keys.medium, function()
           M.difficulty = "MEDIUM"
+          M.skip = 0
           M.questions()
         end)
         map({ "n", "i" }, config.keys.hard, function()
           M.difficulty = "HARD"
+          M.skip = 0
           M.questions()
         end)
         map({ "n", "i" }, config.keys.accepted, function()
           M.status = "AC"
+          M.skip = 0
           M.questions()
         end)
         map({ "n", "i" }, config.keys.not_started, function()
           M.status = "NOT_STARTED"
+          M.skip = 0
           M.questions()
         end)
         map({ "n", "i" }, config.keys.tried, function()
           M.status = "TRIED"
+          M.skip = 0
+          M.questions()
+        end)
+        map({ "n", "i" }, config.keys.page_prev, function()
+          if M.skip >= config.limit then
+            M.skip = M.skip - config.limit or M.skip
+            M.questions()
+          end
+        end)
+        map({ "n", "i" }, config.keys.page_next, function()
+          M.skip = M.skip + config.limit
           M.questions()
         end)
         return true

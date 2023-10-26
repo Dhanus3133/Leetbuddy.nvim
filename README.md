@@ -50,6 +50,8 @@ LeetBuddy.nvim provides the following commands:
   - `<C-a>`: Display only problems with a status of "Accepted" (AC).
   - `<C-y>`: Display only problems with a status of "Not Started" (NOT_STARTED).
   - `<C-t>`: Display only problems with a status of "Tried" (TRIED).
+  - `<C-l>`: Display problems next page.
+  - `<C-h>`: Display problems prev page.
 - `LBQuestion`: Displays the question in a popup window.
 - `LBReset`: Resets the code of the current question to the default template.
 - `LBTest`: Runs the test cases for the current question. Multiple test cases can be added.
@@ -64,15 +66,18 @@ LeetBuddy.nvim allows you to customize certain aspects of its behavior. You can 
 require('leetbuddy').setup({
     domain = "com"  -- `cn` for chinese leetcode
     language = "py",
+    limit = 30, -- Number of problems displayed in telescope
     keys = {
         select = "<CR>",
         reset = "<C-r>",
         easy = "<C-e>",
-        medium = "<C-d>",
+        medium = "<C-m>",
         hard = "<C-h>",
         accepted = "<C-a>",
         not_started = "<C-y>",
         tried = "<C-t>",
+        page_next = "<C-l>",
+        page_prev = "<C-h>",
     }
 })
 ```
