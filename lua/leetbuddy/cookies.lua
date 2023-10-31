@@ -1,5 +1,5 @@
-local curl = require("plenary.curl")
 local config = require("leetbuddy.config")
+local curl = require("plenary.curl")
 local path = require("plenary.path")
 local sep = require("plenary.path").path.sep
 local cookie_file = path:new(vim.loop.os_homedir() .. sep .. ".lbcookie")
@@ -72,7 +72,10 @@ function M.check_auth()
     }
   ]]
 
-  local response = curl.post(config.graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query }) })
+  local response = curl.post(
+    config.graphql_endpoint,
+    { headers = headers, body = vim.json.encode({ query = query }) }
+  )
   local user_status = vim.json.decode(response["body"])["data"]["userStatus"]
   status = user_status["isSignedIn"]
   username = user_status["username"]

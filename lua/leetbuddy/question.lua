@@ -1,7 +1,7 @@
-local utils = require("leetbuddy.utils")
-local curl = require("plenary.curl")
 local config = require("leetbuddy.config")
+local curl = require("plenary.curl")
 local headers = require("leetbuddy.headers")
+local utils = require("leetbuddy.utils")
 
 local M = {}
 
@@ -12,8 +12,10 @@ local old_contents
 local function question_display(contents, oldqbufnr)
   Qbufnr = oldqbufnr or vim.api.nvim_create_buf(true, true)
 
-  local width = math.ceil(math.min(vim.o.columns, math.max(90, vim.o.columns - 20)))
-  local height = math.ceil(math.min(vim.o.lines, math.max(25, vim.o.lines - 10)))
+  local width =
+    math.ceil(math.min(vim.o.columns, math.max(90, vim.o.columns - 20)))
+  local height =
+    math.ceil(math.min(vim.o.lines, math.max(25, vim.o.lines - 10)))
 
   local row = math.ceil(vim.o.lines - height) * 0.5 - 1
   local col = math.ceil(vim.o.columns - width) * 0.5 - 1
@@ -35,11 +37,29 @@ local function question_display(contents, oldqbufnr)
     vim.api.nvim_buf_set_option(Qbufnr, "modifiable", false)
     vim.api.nvim_buf_set_option(Qbufnr, "buftype", "nofile")
     vim.api.nvim_buf_set_option(Qbufnr, "buflisted", false)
-    vim.api.nvim_buf_set_keymap(Qbufnr, "n", "<esc>", "<cmd>hide<CR>", { noremap = true })
-    vim.api.nvim_buf_set_keymap(Qbufnr, "n", "q", "<cmd>hide<CR>", { noremap = true })
+    vim.api.nvim_buf_set_keymap(
+      Qbufnr,
+      "n",
+      "<esc>",
+      "<cmd>hide<CR>",
+      { noremap = true }
+    )
+    vim.api.nvim_buf_set_keymap(
+      Qbufnr,
+      "n",
+      "q",
+      "<cmd>hide<CR>",
+      { noremap = true }
+    )
   end
 
-  vim.api.nvim_buf_set_keymap(Qbufnr, "v", "q", "<cmd>hide<CR>", { noremap = true })
+  vim.api.nvim_buf_set_keymap(
+    Qbufnr,
+    "v",
+    "q",
+    "<cmd>hide<CR>",
+    { noremap = true }
+  )
   if contents ~= old_contents then
     contents = utils.pad(contents, { pad_top = 1 })
     vim.api.nvim_buf_set_option(Qbufnr, "modifiable", true)
@@ -80,12 +100,11 @@ function M.fetch_question_api(slug)
   }
   ]]
 
-  local response = curl.post(
-    config.graphql_endpoint,
-    { headers = headers, body = vim.json.encode({ query = query, variables = variables }) }
-  )
+  local response = curl.post(config.graphql_endpoint, {
+    headers = headers,
+    body = vim.json.encode({ query = query, variables = variables }),
+  })
   return vim.json.decode(response["body"])
-
 end
 
 local function fetch_question(slug)
@@ -123,7 +142,11 @@ local function fetch_question(slug)
   for _, entity in ipairs(entities) do
     content = string.gsub(content, "&" .. entity[1] .. ";", entity[2])
   end
-  return question["questionFrontendId"] .. ". " .. question["title"] .. "\n" .. content
+  return question["questionFrontendId"]
+    .. ". "
+    .. question["title"]
+    .. "\n"
+    .. content
 end
 
 function M.question()
@@ -131,7 +154,8 @@ function M.question()
   if utils.is_in_folder(buf_name, config.directory) then
     local question_slug = utils.get_question_slug(buf_name)
     if previous_question_slug ~= question_slug then
-      question_content = utils.split_string_to_table(fetch_question(question_slug))
+      question_content =
+        utils.split_string_to_table(fetch_question(question_slug))
     end
 
     previous_question_slug = question_slug

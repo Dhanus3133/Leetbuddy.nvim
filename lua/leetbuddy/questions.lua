@@ -1,8 +1,8 @@
-local curl = require("plenary.curl")
 local config = require("leetbuddy.config")
+local curl = require("plenary.curl")
 local headers = require("leetbuddy.headers")
-local utils = require("leetbuddy.utils")
 local split = require("leetbuddy.split")
+local utils = require("leetbuddy.utils")
 
 local M = {}
 
@@ -57,20 +57,23 @@ local function display_questions(search_query)
     }
   ]]
 
-  local response =
-    curl.post(graphql_endpoint, { headers = headers, body = vim.json.encode({ query = query, variables = variables }) })
+  local response = curl.post(graphql_endpoint, {
+    headers = headers,
+    body = vim.json.encode({ query = query, variables = variables }),
+  })
 
-  local data = vim.json.decode(response["body"])["data"]["problemsetQuestionList"]
+  local data =
+    vim.json.decode(response["body"])["data"]["problemsetQuestionList"]
   return (data ~= vim.NIL and data["questions"] or {})
 end
 
-local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
+local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
-local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
-local make_entry = require("telescope.make_entry")
+local actions = require("telescope.actions")
 local entry_display = require("telescope.pickers.entry_display")
+local make_entry = require("telescope.make_entry")
 
 local opts = {}
 
@@ -121,7 +124,13 @@ local function gen_from_questions()
         difficulty = o.difficulty,
         paid_only = o.paidOnly,
       },
-      ordinal = string.format("%s %s %s %s", o.frontendQuestionId, o.status, o.titleCn, o.difficulty),
+      ordinal = string.format(
+        "%s %s %s %s",
+        o.frontendQuestionId,
+        o.status,
+        o.titleCn,
+        o.difficulty
+      ),
     }
     return make_entry.set_default_entry_mt(entry, opts)
   end
@@ -130,9 +139,14 @@ end
 local function select_problem(prompt_bufnr)
   actions.close(prompt_bufnr)
   local problem = action_state.get_selected_entry()
-  local question_slug = string.format("%04d-%s", problem["value"]["frontendQuestionId"], problem["value"]["slug"])
+  local question_slug = string.format(
+    "%04d-%s",
+    problem["value"]["frontendQuestionId"],
+    problem["value"]["slug"]
+  )
   local lang = config.languages.get_lang_by_extension(config.language)
-  local folder = lang:get_folder(utils.path_join(config.directory, question_slug))
+  local folder =
+    lang:get_folder(utils.path_join(config.directory, question_slug))
 
   if not utils.find_file_inside_folder(config.directory, question_slug) then
     vim.api.nvim_command(":silent !mkdir -p " .. folder)

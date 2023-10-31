@@ -31,13 +31,10 @@ function M.reset_question()
       }
     ]]
 
-    local response = curl.post(
-      graphql_endpoint,
-      {
-        headers = headers,
-        body = vim.json.encode({ query = query, variables = variables }),
-      }
-    )
+    local response = curl.post(graphql_endpoint, {
+      headers = headers,
+      body = vim.json.encode({ query = query, variables = variables }),
+    })
 
     local question = vim.json.decode(response["body"])["data"]["question"]
     local submission_contents

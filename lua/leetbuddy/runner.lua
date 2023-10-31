@@ -81,7 +81,10 @@ local function check_id(id, mode)
   local question_slug = utils.get_question_slug(buf_name)
 
   local extra_headers = {
-    ["Referer"] = config.website .. "/problems/" .. question_slug .. "/submissions/",
+    ["Referer"] = config.website
+      .. "/problems/"
+      .. question_slug
+      .. "/submissions/",
   }
 
   local new_headers = vim.tbl_deep_extend("force", headers, extra_headers)

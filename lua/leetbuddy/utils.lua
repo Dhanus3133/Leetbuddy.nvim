@@ -37,7 +37,8 @@ function M.pad(contents, opts)
   local left_padding = (" "):rep(opts.pad_left or 1)
   local right_padding = (" "):rep(opts.pad_right or 1)
   for i, line in ipairs(contents) do
-    contents[i] = string.format("%s%s%s", left_padding, line:gsub("\r", ""), right_padding)
+    contents[i] =
+      string.format("%s%s%s", left_padding, line:gsub("\r", ""), right_padding)
   end
   if opts.pad_top then
     for _ = 1, opts.pad_top do
@@ -70,7 +71,8 @@ end
 
 function M.get_question_slug(file)
   local folder_name = vim.fn.fnamemodify(M.get_folder(file), ":t")
-  local output = string.gsub(string.gsub(folder_name, "^%d+%-", ""), "%.[^.]+$", "")
+  local output =
+    string.gsub(string.gsub(folder_name, "^%d+%-", ""), "%.[^.]+$", "")
   return output
 end
 
@@ -154,7 +156,7 @@ end
 ---@param ... string Path fragments
 ---@return string path Joined path
 function M.path_join(...)
-  return table.concat({...}, path.path.sep)
+  return table.concat({ ... }, path.path.sep)
 end
 
 ---Find the first value in the table matching the predicate
@@ -229,7 +231,8 @@ LEETBUDDY_END_SUBMISSION = "LEETBUDDY_END_SUBMISSION"
 ---@field leetcode_name LeetcodeNames The name of this language in the LeetCode API
 ---@field comment_chars string The string used to mark comments in this language
 ---@field preamble string[] Any additional lines to insert before the submission guards e.g. to get LSPs working
-M.Language = {extension = nil, leetcode_name = nil, comment_chars = nil, preamble={}} ---@diagnostic disable-line: assign-type-mismatch
+M.Language =
+  { extension = nil, leetcode_name = nil, comment_chars = nil, preamble = {} } ---@diagnostic disable-line: assign-type-mismatch
 M.Language.__index = M.Language
 
 ---Create a new language
@@ -238,7 +241,11 @@ M.Language.__index = M.Language
 ---@param comment_chars string Comment chars to use for language
 ---@return table
 function M.Language:new(extension, leetcode_name, comment_chars)
-  local o = {extension = extension, leetcode_name = leetcode_name, comment_chars = comment_chars}
+  local o = {
+    extension = extension,
+    leetcode_name = leetcode_name,
+    comment_chars = comment_chars,
+  }
   setmetatable(o, M.Language)
   return o
 end

@@ -63,7 +63,11 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
     if method == "test" then
       if json_data["run_success"] then
         if json_data["correct_answer"] then
-          insert((is_cn and cn["pc"] or "Passed Cases") .. ": " .. json_data["total_testcases"])
+          insert(
+            (is_cn and cn["pc"] or "Passed Cases")
+              .. ": "
+              .. json_data["total_testcases"]
+          )
           insert((is_cn and cn["acc"] or "Accepted") .. " ✔️ ")
         else
           insert(
@@ -77,16 +81,35 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
           )
           insert("")
 
-          local test_case_inputs = utils.split_test_case_inputs(input_path, json_data["total_testcases"])
+          local test_case_inputs = utils.split_test_case_inputs(
+            input_path,
+            json_data["total_testcases"]
+          )
           for i = 1, json_data["total_testcases"] do
-            if json_data["code_answer"][i] ~= json_data["expected_code_answer"][i] then
-              insert((is_cn and cn["testc"] or "Test Case") .. ": #" .. i .. " ❌ ")
+            if
+              json_data["code_answer"][i]
+              ~= json_data["expected_code_answer"][i]
+            then
+              insert(
+                (is_cn and cn["testc"] or "Test Case") .. ": #" .. i .. " ❌ "
+              )
 
               local failing_test_input = table.concat(test_case_inputs[i], ", ")
-              insert((is_cn and cn["inc"] or "Input") .. ": " .. failing_test_input)
-              insert((is_cn and cn["out"] or "Output") .. ": " .. json_data["code_answer"][i])
-              insert((is_cn and cn["exp"] or "Expected") .. ": " .. json_data["expected_code_answer"][i])
-              local std = utils.split_string_to_table(json_data["std_output_list"][i])
+              insert(
+                (is_cn and cn["inc"] or "Input") .. ": " .. failing_test_input
+              )
+              insert(
+                (is_cn and cn["out"] or "Output")
+                  .. ": "
+                  .. json_data["code_answer"][i]
+              )
+              insert(
+                (is_cn and cn["exp"] or "Expected")
+                  .. ": "
+                  .. json_data["expected_code_answer"][i]
+              )
+              local std =
+                utils.split_string_to_table(json_data["std_output_list"][i])
 
               if #std > 0 then
                 insert((is_cn and cn["stdo"] or "Std Output") .. ": ")
@@ -97,7 +120,10 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
           end
           insert("")
           for i = 1, json_data["total_testcases"] do
-            if json_data["code_answer"][i] == json_data["expected_code_answer"][i] then
+            if
+              json_data["code_answer"][i]
+              == json_data["expected_code_answer"][i]
+            then
               insert(
                 (is_cn and cn["testc"] or "Test Case")
                   .. ": #"
@@ -110,15 +136,28 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
           end
         end
         insert("")
-        insert((is_cn and cn["mem"] or "Memory") .. ": " .. json_data["status_memory"])
-        insert((is_cn and cn["rt"] or "Runtime") .. ": " .. json_data["status_runtime"])
+        insert(
+          (is_cn and cn["mem"] or "Memory")
+            .. ": "
+            .. json_data["status_memory"]
+        )
+        insert(
+          (is_cn and cn["rt"] or "Runtime")
+            .. ": "
+            .. json_data["status_runtime"]
+        )
       else
         insert(get_status_msg(json_data["status_msg"]))
         insert(json_data["runtime_error"])
         insert("")
 
         local std_output = json_data["std_output_list"]
-        insert((is_cn and cn["testc"] or "Test Case") .. ": #" .. #std_output .. " ❌ ")
+        insert(
+          (is_cn and cn["testc"] or "Test Case")
+            .. ": #"
+            .. #std_output
+            .. " ❌ "
+        )
 
         local std = utils.split_string_to_table(std_output[#std_output])
 
@@ -133,11 +172,23 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
       local success = json_data["total_correct"] == json_data["total_testcases"]
 
       if success then
-        insert((is_cn and cn["pc"] or "Passed Cases") .. ": " .. json_data["total_correct"])
+        insert(
+          (is_cn and cn["pc"] or "Passed Cases")
+            .. ": "
+            .. json_data["total_correct"]
+        )
         insert((is_cn and cn["acc"] or "Accepted") .. " ✔️ ")
         insert("")
-        insert((is_cn and cn["mem"] or "Memory") .. ": " .. json_data["status_memory"])
-        insert((is_cn and cn["rt"] or "Runtime") .. ": " .. json_data["status_runtime"])
+        insert(
+          (is_cn and cn["mem"] or "Memory")
+            .. ": "
+            .. json_data["status_memory"]
+        )
+        insert(
+          (is_cn and cn["rt"] or "Runtime")
+            .. ": "
+            .. json_data["status_runtime"]
+        )
       else
         insert(get_status_msg(json_data["status_msg"]))
 
@@ -175,8 +226,14 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
         -- end
 
         insert("")
-        insert((is_cn and cn["exp_out"] or "Expected Output") .. ": " .. json_data["expected_output"])
-        insert((is_cn and cn["out"] or "Output") .. ": " .. json_data["code_output"])
+        insert(
+          (is_cn and cn["exp_out"] or "Expected Output")
+            .. ": "
+            .. json_data["expected_output"]
+        )
+        insert(
+          (is_cn and cn["out"] or "Output") .. ": " .. json_data["code_output"]
+        )
 
         local std = utils.split_string_to_table(json_data["std_output"])
         if #std > 0 then

@@ -18,6 +18,12 @@ local web_config = {
   graphql_endpoint = graphql_endpoint,
 }
 
-local config = vim.tbl_deep_extend("force", web_config, cookies, {languages = require("leetbuddy.languages")}, user_config)
+local config = vim.tbl_deep_extend(
+  "force",
+  web_config,
+  cookies,
+  { languages = require("leetbuddy.languages") },
+  user_config
+)
 
 return config

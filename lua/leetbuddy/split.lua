@@ -1,7 +1,7 @@
 local M = {}
 
-local utils = require("leetbuddy.utils")
 local config = require("leetbuddy.config")
+local utils = require("leetbuddy.utils")
 local cn = require("leetbuddy.display").cn
 
 local input_buffer
