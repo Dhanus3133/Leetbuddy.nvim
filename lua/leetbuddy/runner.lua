@@ -123,18 +123,11 @@ function M.run(mode)
   local results_buffer = require("leetbuddy.split").get_results_buffer()
   require("leetbuddy.display").display_results(true, results_buffer)
   local id = generate_id(mode)
-  local iterations = 0
-  local max_iterations = 3
   timer:start(
     100,
     1000,
     vim.schedule_wrap(function()
-      if iterations > max_iterations then
-        timer:stop()
-      else
-        check_id(id, mode)
-      end
-      iterations = iterations + 1
+      check_id(id, mode)
     end)
   )
 end
