@@ -66,6 +66,9 @@ LeetBuddy.nvim allows you to customize certain aspects of its behavior. You can 
 require('leetbuddy').setup({
     domain = "com"  -- `cn` for chinese leetcode
     language = "py",
+    languages = {
+        ...
+    }
     limit = 30, -- Number of problems displayed in telescope
     keys = {
         select = "<CR>",
@@ -78,7 +81,7 @@ require('leetbuddy').setup({
         tried = "<C-t>",
         page_next = "<C-l>",
         page_prev = "<C-h>",
-    }
+    },
 })
 ```
 
@@ -107,6 +110,31 @@ require('leetbuddy').setup({
 | `dart`     | Dart       |
 
 </details>
+
+### Language-specific behaviours
+
+You can customise how the plugin handles specific languages by overriding
+fields in the ``languages`` section of the config. Each value in this table
+implements the ``Language`` class found in the ``utils.lua`` file. You can
+override part or all of the methods/values defined for a language by including
+corresponding entries in your config. For example, to modify the submission
+file name and comment characters for C, you would enter this in your config:
+
+```lua
+require('leetbuddy').setup({
+    languages = {
+        c = {
+            get_submission_file_path = function (folder)
+                return folder .. "/whatever/you/want/the/path/to/be"
+            end,
+            comment_chars = "#",
+        }
+    }
+})
+```
+
+This is mainly useful for setting up your working folder to get LSPs working.
+For an example, see the Rust implementation.
 
 ## Login to your account
 
