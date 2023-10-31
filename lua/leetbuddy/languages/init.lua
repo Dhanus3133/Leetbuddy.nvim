@@ -1,7 +1,3 @@
-local utils = require("leetbuddy.utils")
-
-local M = {}
-
 local function get_langs()
   local info = debug.getinfo(1, "S")
   local module_directory = string.match(info.source, "^@(.*)/")
@@ -33,24 +29,4 @@ local function get_langs()
   return langs
 end
 
-M.languages = get_langs()
-
----Get language class by file extension
----@param extension FileExtensions
----@return Language
-function M.get_lang_by_extension(extension)
-  return utils.find_in_table(function(l)
-    return l.extension == extension
-  end, M.languages)
-end
-
----Get language class by leetcode name
----@param name LeetcodeNames Language name
----@return Language
-function M.get_lang_by_name(name)
-  return utils.find_in_table(function(l)
-    return l.leetcode_name == name
-  end, M.languages)
-end
-
-return M
+return get_langs()

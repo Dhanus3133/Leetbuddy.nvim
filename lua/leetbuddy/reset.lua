@@ -10,7 +10,7 @@ function M.reset_question()
   local config = require("leetbuddy.config")
   vim.cmd("LBCheckCookies")
   if utils.is_in_folder(vim.api.nvim_buf_get_name(0), directory) then
-    local lang = config.languages.get_lang_by_extension(config.language)
+    local lang = config.get_lang_by_extension(config.language)
     local buf_name = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
     local slug = utils.get_question_slug(buf_name)
 

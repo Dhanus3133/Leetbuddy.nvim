@@ -19,7 +19,7 @@ local M = {}
 
 local function generate_id(mode)
   local buf_name = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
-  local lang = config.language.get_lang_by_extension(config.language)
+  local lang = config.get_lang_by_extension(config.language)
   local folder = lang:get_folder(buf_name)
 
   local code = lang:get_submission_file_contents(folder)
@@ -75,7 +75,7 @@ local function check_id(id, mode)
   local json_data
 
   local buf_name = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
-  local lang = languages.get_lang_by_extension(config.language)
+  local lang = config.get_lang_by_extension(config.language)
   local folder = lang:get_folder(buf_name)
 
   local question_slug = utils.get_question_slug(buf_name)

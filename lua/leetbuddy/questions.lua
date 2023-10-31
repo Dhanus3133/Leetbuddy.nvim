@@ -144,7 +144,7 @@ local function select_problem(prompt_bufnr)
     problem["value"]["frontendQuestionId"],
     problem["value"]["slug"]
   )
-  local lang = config.languages.get_lang_by_extension(config.language)
+  local lang = config.get_lang_by_extension(config.language)
   local folder =
     lang:get_folder(utils.path_join(config.directory, question_slug))
 

@@ -10,7 +10,7 @@ local results_buffer
 function M.split()
   local code_buffer = vim.api.nvim_get_current_buf()
   local code_path = vim.api.nvim_buf_get_name(code_buffer)
-  local lang = config.languages.get_lang_by_extension(config.language)
+  local lang = config.get_lang_by_extension(config.language)
   local folder = lang:get_folder(code_path)
 
   if input_buffer ~= nil then
