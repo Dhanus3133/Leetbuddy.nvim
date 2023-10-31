@@ -47,7 +47,7 @@ function M.reset_question()
 
     local folder = lang:get_folder(buf_name)
     local input_contents =
-      vim.split(table.concat(question["exampleTestcaseList"], "\n\n"), "\n")
+      vim.split(table.concat(question["exampleTestcaseList"], "\n"), "\n")
     lang:make_folder(folder, submission_contents, input_contents)
   end
   vim.cmd("edit")
