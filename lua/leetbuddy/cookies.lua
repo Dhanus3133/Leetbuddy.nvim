@@ -81,7 +81,7 @@ function M.check_auth()
     saveVariablesToFile()
     M.check_auth()
   else
-    print("Loggedin in as " .. username)
+    print("Logged in as " .. username)
   end
 end
 

@@ -13,14 +13,11 @@ if not success then
   cookies = {}
 end
 
-local extra_config = {
+local web_config = {
   website = website,
   graphql_endpoint = graphql_endpoint,
 }
 
-extra_config = vim.tbl_deep_extend("force", extra_config, cookies)
-
-local config = vim.tbl_deep_extend("force", user_config, cookies)
-config = vim.tbl_deep_extend("force", config, extra_config)
+local config = vim.tbl_deep_extend("force", web_config, cookies, {languages = require("leetbuddy.languages")}, user_config)
 
 return config

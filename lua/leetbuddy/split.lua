@@ -10,6 +10,8 @@ local results_buffer
 function M.split()
   local code_buffer = vim.api.nvim_get_current_buf()
   local code_path = vim.api.nvim_buf_get_name(code_buffer)
+  local lang = config.languages.get_lang_by_extension(config.language)
+  local folder = lang:get_folder(code_path)
 
   if input_buffer ~= nil then
     return
@@ -27,7 +29,7 @@ function M.split()
   vim.api.nvim_buf_set_option(results_buffer, "filetype", "Results")
 
   vim.api.nvim_buf_call(code_buffer, function()
-    vim.cmd("botright vsplit " .. utils.get_input_file_path(code_path))
+    vim.cmd("botright vsplit " .. lang:get_input_file_path(folder))
   end)
 
   vim.api.nvim_buf_call(input_buffer, function()

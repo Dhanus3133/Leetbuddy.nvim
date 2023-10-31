@@ -52,7 +52,7 @@ local function question_display(contents, oldqbufnr)
   return Qbufnr
 end
 
-local function fetch_question(slug)
+function M.fetch_question_api(slug)
   vim.cmd("LBCheckCookies")
 
   local variables = {
@@ -84,8 +84,13 @@ local function fetch_question(slug)
     config.graphql_endpoint,
     { headers = headers, body = vim.json.encode({ query = query, variables = variables }) }
   )
+  return vim.json.decode(response["body"])
 
-  local question = vim.json.decode(response["body"])["data"]["question"]
+end
+
+local function fetch_question(slug)
+  local body = M.fetch_question_api(slug)
+  local question = body["data"]["question"]
   question_id = question["questionId"]
   local content = question["content"]
   if question["content"] == vim.NIL then
@@ -122,10 +127,9 @@ local function fetch_question(slug)
 end
 
 function M.question()
-  if utils.is_in_folder(vim.api.nvim_buf_get_name(0), config.directory) then
-    local file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
-
-    local question_slug = utils.get_question_slug(file)
+  local buf_name = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+  if utils.is_in_folder(buf_name, config.directory) then
+    local question_slug = utils.get_question_slug(buf_name)
     if previous_question_slug ~= question_slug then
       question_content = utils.split_string_to_table(fetch_question(question_slug))
     end

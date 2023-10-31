@@ -1,5 +1,4 @@
 local curl = require("plenary.curl")
-local sep = require("plenary.path").path.sep
 local config = require("leetbuddy.config")
 local headers = require("leetbuddy.headers")
 local utils = require("leetbuddy.utils")
@@ -132,24 +131,22 @@ local function select_problem(prompt_bufnr)
   actions.close(prompt_bufnr)
   local problem = action_state.get_selected_entry()
   local question_slug = string.format("%04d-%s", problem["value"]["frontendQuestionId"], problem["value"]["slug"])
+  local lang = config.languages.get_lang_by_extension(config.language)
+  local folder = lang:get_folder(utils.path_join(config.directory, question_slug))
 
   if not utils.find_file_inside_folder(config.directory, question_slug) then
-    vim.api.nvim_command(":silent !mkdir " .. config.directory .. sep .. question_slug)
+    vim.api.nvim_command(":silent !mkdir -p " .. folder)
   end
 
-  local file = config.directory .. sep .. question_slug .. sep .. question_slug .. "." .. config.language
-  local input = config.directory .. sep .. question_slug .. sep .. "input" .. "." .. "txt"
+  local file = lang:get_submission_file_path(folder)
 
-  local qfound =
-    utils.find_file_inside_folder(config.directory .. sep .. question_slug, question_slug .. "." .. config.language)
+  local qfound = vim.fn.filereadable(file) ~= 0
 
   if split.get_results_buffer() then
     vim.api.nvim_command("LBClose")
   end
 
   if not qfound then
-    vim.api.nvim_command(":silent !touch " .. file)
-    vim.api.nvim_command(":silent !touch " .. input)
     vim.api.nvim_command("edit! " .. file)
     vim.api.nvim_command("LBReset")
   else

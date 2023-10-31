@@ -1,0 +1,8 @@
+{
+    "workspace.library": [
+        "/Users/andy/.local/share/nvim/site/pack/packer/start/neodev.nvim/types/stable",
+        "/usr/local/Cellar/neovim/0.9.4/share/nvim/runtime/lua",
+        "/Users/andy/.local/share/nvim/site/pack/packer/start/Leetbuddy.nvim/lua",
+        "${3rd}/luv/library"
+    ]
+}
