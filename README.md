@@ -1,3 +1,9 @@
+## 👋 Archiving and Recommendation 🙌
+
+I have decided to archive **LeetBuddy.nvim**. I believe that [kawre/leetcode.nvim](https://github.com/kawre/leetcode.nvim) provides more features.
+
+**Note:** This repository is now archived, and no further development or maintenance will be done.
+
 # LeetBuddy.nvim
 
 LeetBuddy.nvim enables seamless integration with **Leetcode**, empowering you to solve coding problems effortlessly within Neovim.
